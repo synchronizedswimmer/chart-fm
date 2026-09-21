@@ -30,7 +30,6 @@ ul.task-list li input[type="checkbox"] {
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -47,11 +46,11 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-4da8503a74ad68ddb1f8af1e1bff6243.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
+  "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
+  "panel-placement": "start",
+  "type": "textbox",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
@@ -78,81 +77,350 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">chart-fm</span>
-    </a>
-  </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
-<span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./testing.html"> 
-<span class="menu-text">Testing</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
-<span class="menu-text">About</span></a>
-  </li>  
-</ul>
-          </div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
-</div>
-      </div> <!-- /container-fluid -->
-    </nav>
-</header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
-    </div>
+    
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">chart-fm</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
+<nav class="floating-nav">
+<button id="nav-home" class="floating-nav-item active" type="button">
+home
+</button>
+<button id="nav-scrobbles" class="floating-nav-item" type="button">
+view my scrobbles
+</button>
+</nav>
 <div id="home-tab-view" class="tab-view">
 
+</div>
+<div id="scrobbles-tab-view" class="tab-view" style="display: none; width: 100%;">
+  <div id="scrobbles-search-container" style="min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 20px 16px;">
+    <div style="width: 100%; max-width: 440px; margin: auto; text-align: center;">
+      <form id="lastfm-form" style="margin-bottom: 1.5rem; text-align: left;">
+        <label for="lastfm-username" style="display: block; font-size: 0.88rem; margin-bottom: 0.5rem; color: #d4d4d8;">Last.fm username</label>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input id="lastfm-username" class="form-control" type="text" placeholder="e.g. rj" required="" style="flex: 1; height: 38px; background: #18181b; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; border-radius: 6px; padding: 0 12px; font-size: 0.9rem;">
+          <button class="btn scrobble-btn" type="submit" style="height: 38px; padding: 0 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; line-height: 1; white-space: nowrap;">Look up</button>
+        </div>
+      </form>
+
+      <div id="lastfm-status" role="status" style="margin-bottom: 1rem; color: #a1a1aa; font-size: 0.9rem; text-align: center;"></div>
+    </div>
+  </div>
+
+  <div id="scrobbles-chart-container" style="display: none; width: 100%;"></div>
+</div>
+
+<!-- Floating bottom settings tab (gear icon) -->
+<div class="settings-dock">
+  <button id="settings-tab-btn" class="settings-tab-btn" type="button" aria-label="Settings" title="simulation settings">
+    <svg class="settings-gear-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
+  </button>
+</div>
+
+<!-- Backdrop and expanded settings panel -->
+<div id="settings-backdrop" class="settings-backdrop"></div>
+
+<div id="settings-panel" class="settings-panel">
+  <div class="settings-panel-header">
+    <span class="settings-panel-title">settings</span>
+    <button id="settings-close-btn" class="settings-panel-close" type="button" aria-label="Close settings">×</button>
+  </div>
+
+  <!-- User lookup section (only visible on view my scrobbles tab) -->
+  <div id="settings-user-group" class="settings-group" style="display: none;">
+    <div class="settings-group-label">
+      <span>last.fm username</span>
+    </div>
+    <form id="settings-user-form" class="settings-user-form">
+      <input id="settings-user-input" class="settings-user-input" type="text" placeholder="e.g. rj" required="">
+      <button class="settings-btn" type="submit">load</button>
+    </form>
+    <div id="settings-user-status" style="font-size: 0.72rem; color: #a1a1aa; margin-top: 4px;"></div>
+  </div>
+
+  <!-- Dynamics controls (on both tabs) -->
+  <div class="settings-group">
+    <div class="settings-group-label">
+      <span>size dynamics</span>
+      <span id="settings-size-val" class="settings-group-value">1.0x</span>
+    </div>
+    <input id="settings-size-slider" class="settings-range" type="range" min="0.0" max="2.0" step="0.05" value="1.0">
+  </div>
+
+  <div class="settings-group">
+    <div class="settings-group-label">
+      <span>gravity dynamics</span>
+      <span id="settings-gravdyn-val" class="settings-group-value">1.00x</span>
+    </div>
+    <input id="settings-gravdyn-slider" class="settings-range" type="range" min="0.0" max="2.0" step="0.05" value="1.0">
+  </div>
+
+  <div class="settings-group">
+    <div class="settings-group-label">
+      <span>gravity to center</span>
+      <span id="settings-gravity-val" class="settings-group-value">0.07</span>
+    </div>
+    <input id="settings-gravity-slider" class="settings-range" type="range" min="0.01" max="0.20" step="0.01" value="0.07">
+  </div>
+
+  <div class="settings-group">
+    <div class="settings-group-label">
+      <span>attraction to each other</span>
+      <span id="settings-attraction-val" class="settings-group-value">-15</span>
+    </div>
+    <input id="settings-attraction-slider" class="settings-range" type="range" min="-60" max="15" step="1" value="-15">
+  </div>
+
+  <div class="settings-group">
+    <div class="settings-group-label">
+      <span>minimum distance by pixels</span>
+      <span id="settings-mindist-val" class="settings-group-value">2px</span>
+    </div>
+    <input id="settings-mindist-slider" class="settings-range" type="range" min="0" max="20" step="1" value="2">
+  </div>
+
+  <div style="text-align: right; margin-top: 10px;">
+    <button id="settings-reset-btn" class="settings-reset-btn" type="button">reset to defaults</button>
+  </div>
 </div>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="home-chart.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        document.body.classList.add("has-chart");
-        window.initHomeTopAlbums();
+  function showTab(tabName) {
+    const homeView = document.getElementById("home-tab-view");
+    const scrobblesView = document.getElementById("scrobbles-tab-view");
+    const navHome = document.getElementById("nav-home");
+    const navScrobbles = document.getElementById("nav-scrobbles");
+    const settingsUserGroup = document.getElementById("settings-user-group");
+
+    if (tabName === "scrobbles") {
+      if (homeView) homeView.style.display = "none";
+      if (scrobblesView) scrobblesView.style.display = "block";
+      navHome?.classList.remove("active");
+      navScrobbles?.classList.add("active");
+      if (settingsUserGroup) settingsUserGroup.style.display = "block";
+      window.refreshScrobblesChartDimensions?.();
+    } else {
+      if (scrobblesView) scrobblesView.style.display = "none";
+      if (homeView) homeView.style.display = "block";
+      navScrobbles?.classList.remove("active");
+      navHome?.classList.add("active");
+      if (settingsUserGroup) settingsUserGroup.style.display = "none";
+      window.refreshHomeChartDimensions?.();
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.add("has-chart");
+    window.initHomeTopAlbums();
+
+    const navHome = document.getElementById("nav-home");
+    const navScrobbles = document.getElementById("nav-scrobbles");
+
+    navHome?.addEventListener("click", () => {
+      window.location.hash = "home";
     });
+
+    navScrobbles?.addEventListener("click", () => {
+      window.location.hash = "scrobbles";
+    });
+
+    window.addEventListener("hashchange", () => {
+      const isScrobbles = window.location.hash === "#scrobbles";
+      showTab(isScrobbles ? "scrobbles" : "home");
+    });
+
+    if (window.location.hash === "#scrobbles") {
+      showTab("scrobbles");
+    }
+
+    // --- Settings Panel Controls ---
+    const settingsTabBtn = document.getElementById("settings-tab-btn");
+    const settingsPanel = document.getElementById("settings-panel");
+    const settingsBackdrop = document.getElementById("settings-backdrop");
+    const settingsCloseBtn = document.getElementById("settings-close-btn");
+    const sizeSlider = document.getElementById("settings-size-slider");
+    const sizeVal = document.getElementById("settings-size-val");
+    const gravdynSlider = document.getElementById("settings-gravdyn-slider");
+    const gravdynVal = document.getElementById("settings-gravdyn-val");
+    const gravitySlider = document.getElementById("settings-gravity-slider");
+    const gravityVal = document.getElementById("settings-gravity-val");
+    const attractionSlider = document.getElementById("settings-attraction-slider");
+    const attractionVal = document.getElementById("settings-attraction-val");
+    const mindistSlider = document.getElementById("settings-mindist-slider");
+    const mindistVal = document.getElementById("settings-mindist-val");
+    const resetBtn = document.getElementById("settings-reset-btn");
+
+    function openSettings() {
+      settingsPanel?.classList.add("open");
+      settingsBackdrop?.classList.add("open");
+    }
+
+    function closeSettings() {
+      settingsPanel?.classList.remove("open");
+      settingsBackdrop?.classList.remove("open");
+    }
+
+    settingsTabBtn?.addEventListener("click", openSettings);
+    settingsCloseBtn?.addEventListener("click", closeSettings);
+    settingsBackdrop?.addEventListener("click", closeSettings);
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && settingsPanel?.classList.contains("open")) {
+        closeSettings();
+      }
+    });
+
+    // Default and current physics state
+    const defaultPhysics = { attraction: -15, minDistance: 2, gravity: 0.07, sizeScale: 1.0, gravityDynamics: 1.0 };
+    let currentPhysics = Object.assign({}, defaultPhysics);
+    try {
+      const saved = JSON.parse(localStorage.getItem("chartfm_physics") || "null");
+      if (saved) currentPhysics = Object.assign({}, defaultPhysics, saved);
+    } catch (e) {}
+
+    window.__chartPhysics = Object.assign({}, currentPhysics);
+
+    function syncControls() {
+      if (sizeSlider && sizeVal) {
+        const sz = currentPhysics.sizeScale !== undefined ? currentPhysics.sizeScale : 1.0;
+        sizeSlider.value = sz.toString();
+        sizeVal.textContent = `${Number(sz).toFixed(2)}x`;
+      }
+      if (gravdynSlider && gravdynVal) {
+        const gd = currentPhysics.gravityDynamics !== undefined ? currentPhysics.gravityDynamics : 1.0;
+        gravdynSlider.value = gd.toString();
+        gravdynVal.textContent = `${Number(gd).toFixed(2)}x`;
+      }
+      if (gravitySlider && gravityVal) {
+        const gv = currentPhysics.gravity !== undefined ? currentPhysics.gravity : 0.07;
+        gravitySlider.value = gv.toString();
+        gravityVal.textContent = Number(gv).toFixed(2);
+      }
+      if (attractionSlider && attractionVal) {
+        const at = currentPhysics.attraction !== undefined ? currentPhysics.attraction : -15;
+        attractionSlider.value = at.toString();
+        attractionVal.textContent = at.toString();
+      }
+      if (mindistSlider && mindistVal) {
+        const md = currentPhysics.minDistance !== undefined ? currentPhysics.minDistance : 2;
+        mindistSlider.value = md.toString();
+        mindistVal.textContent = `${md}px`;
+      }
+    }
+
+    syncControls();
+
+    function emitPhysicsChange() {
+      window.__chartPhysics = Object.assign({}, currentPhysics);
+      try {
+        localStorage.setItem("chartfm_physics", JSON.stringify(currentPhysics));
+      } catch (e) {}
+      window.dispatchEvent(new CustomEvent("chartfm-physics-change", { detail: currentPhysics }));
+    }
+
+    sizeSlider?.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value) || 0;
+      currentPhysics.sizeScale = val;
+      if (sizeVal) sizeVal.textContent = `${val.toFixed(2)}x`;
+      emitPhysicsChange();
+    });
+
+    gravdynSlider?.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value) || 0;
+      currentPhysics.gravityDynamics = val;
+      if (gravdynVal) gravdynVal.textContent = `${val.toFixed(2)}x`;
+      emitPhysicsChange();
+    });
+
+    gravitySlider?.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value) || 0.07;
+      currentPhysics.gravity = val;
+      if (gravityVal) gravityVal.textContent = val.toFixed(2);
+      emitPhysicsChange();
+    });
+
+    attractionSlider?.addEventListener("input", (e) => {
+      const val = parseInt(e.target.value, 10);
+      currentPhysics.attraction = isNaN(val) ? -15 : val;
+      if (attractionVal) attractionVal.textContent = currentPhysics.attraction.toString();
+      emitPhysicsChange();
+    });
+
+    mindistSlider?.addEventListener("input", (e) => {
+      const val = parseInt(e.target.value, 10);
+      currentPhysics.minDistance = isNaN(val) ? 2 : val;
+      if (mindistVal) mindistVal.textContent = `${currentPhysics.minDistance}px`;
+      emitPhysicsChange();
+    });
+
+    resetBtn?.addEventListener("click", () => {
+      currentPhysics = Object.assign({}, defaultPhysics);
+      syncControls();
+      emitPhysicsChange();
+    });
+
+    // --- User Scrobbles Lookup ---
+    const lastfmForm = document.getElementById("lastfm-form");
+    const lastfmStatus = document.getElementById("lastfm-status");
+    const settingsUserForm = document.getElementById("settings-user-form");
+    const settingsUserInput = document.getElementById("settings-user-input");
+    const settingsUserStatus = document.getElementById("settings-user-status");
+    const searchContainer = document.getElementById("scrobbles-search-container");
+    const chartContainer = document.getElementById("scrobbles-chart-container");
+
+    async function loadUserScrobbles(username) {
+      if (!username) return;
+      if (settingsUserStatus) settingsUserStatus.textContent = `loading ${username}...`;
+      if (lastfmStatus) lastfmStatus.textContent = `loading top albums for ${username}...`;
+
+      try {
+        if (searchContainer) searchContainer.style.display = "none";
+        if (chartContainer) {
+          chartContainer.style.display = "block";
+          chartContainer.innerHTML = "";
+        }
+        await window.initUserTopAlbums(username, chartContainer);
+        if (settingsUserStatus) settingsUserStatus.textContent = "";
+        closeSettings();
+      } catch (error) {
+        if (chartContainer) chartContainer.style.display = "none";
+        if (searchContainer) searchContainer.style.display = "flex";
+        if (lastfmStatus) lastfmStatus.textContent = `Could not load albums: ${error.message}`;
+        if (settingsUserStatus) settingsUserStatus.textContent = `Error: ${error.message}`;
+      }
+    }
+
+    lastfmForm?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = document.getElementById("lastfm-username");
+      const username = input ? input.value.trim() : "";
+      if (username) {
+        if (settingsUserInput) settingsUserInput.value = username;
+        loadUserScrobbles(username);
+      }
+    });
+
+    settingsUserForm?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = settingsUserInput ? settingsUserInput.value.trim() : "";
+      if (username) {
+        loadUserScrobbles(username);
+      }
+    });
+  });
 </script>
 
 

@@ -1,16 +1,16 @@
 [
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "chart-fm",
+    "section": "",
+    "text": "home\n\n\nview my scrobbles\n\n\n\n\n\n\n  \n    \n      \n        Last.fm username\n        \n          \n          Look up\n        \n      \n\n      \n    \n  \n\n  \n\n\n\n\n  \n    \n      \n      \n    \n  \n\n\n\n\n\n\n  \n    settings\n    ×\n  \n\n  \n  \n    \n      last.fm username\n    \n    \n      \n      load\n    \n    \n  \n\n  \n  \n    \n      size dynamics\n      1.0x\n    \n    \n  \n\n  \n    \n      gravity dynamics\n      1.00x\n    \n    \n  \n\n  \n    \n      gravity to center\n      0.07\n    \n    \n  \n\n  \n    \n      attraction to each other\n      -15\n    \n    \n  \n\n  \n    \n      minimum distance by pixels\n      2px\n    \n    \n  \n\n  \n    reset to defaults"
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
     "text": "About this site"
-  },
-  {
-    "objectID": "testing.html",
-    "href": "testing.html",
-    "title": "Testing",
-    "section": "",
-    "text": "This page lets you look up a Last.fm user and see their recent listening activity.\n\nLast.fm username\n\n&lt;input id=\"lastfm-username\" class=\"form-control\" type=\"text\" placeholder=\"e.g. rj\" required&gt;\n&lt;button class=\"btn btn-primary\" type=\"submit\"&gt;Look up&lt;/button&gt;"
   }
 ]

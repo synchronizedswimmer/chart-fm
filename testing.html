@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Testing – chart-fm</title>
+<title>testing – chart-fm</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -30,7 +30,6 @@ ul.task-list li input[type="checkbox"] {
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -47,11 +46,11 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-4da8503a74ad68ddb1f8af1e1bff6243.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
+  "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
+  "panel-placement": "start",
+  "type": "textbox",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
@@ -78,122 +77,22 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">chart-fm</span>
-    </a>
-  </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
-<span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link active" href="./testing.html" aria-current="page"> 
-<span class="menu-text">Testing</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
-<span class="menu-text">About</span></a>
-  </li>  
-</ul>
-          </div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
-</div>
-      </div> <!-- /container-fluid -->
-    </nav>
-</header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
-    </div>
+    
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Testing</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>This page lets you look up a Last.fm user and see their recent listening activity.</p>
-<form id="lastfm-form" style="max-width: 440px; margin-bottom: 1.5rem;">
-<label for="lastfm-username">Last.fm username</label>
-<div style="display: flex; gap: 0.5rem; margin-top: 0.4rem;">
-<pre><code>&lt;input id="lastfm-username" class="form-control" type="text" placeholder="e.g. rj" required&gt;
-&lt;button class="btn btn-primary" type="submit"&gt;Look up&lt;/button&gt;</code></pre>
-</div>
-</form>
-<div id="lastfm-status" role="status">
-
-</div>
-<div id="lastfm-results">
-
-</div>
 <script>
-  const lastfmApiKey = "b914193d6c62aabcd83adf2b6c457a5f";
-  const lastfmForm = document.getElementById("lastfm-form");
-  const lastfmStatus = document.getElementById("lastfm-status");
-  const lastfmResults = document.getElementById("lastfm-results");
-
-  lastfmForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const username = document.getElementById("lastfm-username").value.trim();
-    if (!username) return;
-
-    lastfmStatus.textContent = "Loading recent tracks...";
-    lastfmResults.replaceChildren();
-    const params = new URLSearchParams({
-      method: "user.getrecenttracks",
-      user: username,
-      api_key: lastfmApiKey,
-      format: "json",
-      limit: "20"
-    });
-
-    try {
-      const response = await fetch(`https://ws.audioscrobbler.com/2.0/?${params}`);
-      const data = await response.json();
-      if (!response.ok || data.error) throw new Error(data.message || "User not found");
-
-      const tracks = data.recenttracks?.track || [];
-      lastfmStatus.textContent = tracks.length ? `${tracks.length} recent tracks` : "No recent tracks found.";
-      for (const track of tracks) {
-        const item = document.createElement("p");
-        item.textContent = `${track.name} - ${track.artist?.["#text"] || track.artist || "Unknown artist"}`;
-        lastfmResults.append(item);
-      }
-    } catch (error) {
-      lastfmStatus.textContent = `Could not load tracks: ${error.message}`;
-    }
-  });
+  window.location.replace("./index.html#scrobbles");
 </script>
 
 
