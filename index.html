@@ -139,8 +139,17 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This is a Quarto website.</p>
-<p>To learn more about Quarto websites visit <a href="https://quarto.org/docs/websites" class="uri">https://quarto.org/docs/websites</a>.</p>
+<div id="home-tab-view" class="tab-view">
+
+</div>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="home-chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("has-chart");
+        window.initHomeTopAlbums();
+    });
+</script>
 
 
 
