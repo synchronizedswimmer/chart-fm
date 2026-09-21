@@ -1,4 +1,55 @@
 /* css styles */
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: #09090b;
+  color: #e4e4e7;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.navbar {
+  background: #09090b !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+  color: #e4e4e7 !important;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #ffffff !important;
+}
+
+.quarto-container,
+#quarto-content,
+main.content {
+  background: #09090b;
+}
+
+.quarto-title h1,
+.title,
+h1,
+h2,
+h3 {
+  color: #fafafa;
+}
+
+a {
+  color: #a1a1aa;
+}
+
+a:hover {
+  color: #ffffff;
+}
+
 @keyframes slideDownIn {
   0% {
     transform: translateY(-70px);
