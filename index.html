@@ -72,6 +72,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<meta name="referrer" content="no-referrer">
 
 
 <link rel="stylesheet" href="styles.css">
@@ -100,7 +101,49 @@ view my scrobbles
 </button>
 </nav>
 <div id="home-tab-view" class="tab-view">
+<div id="home-chart-container"></div>
 
+<section class="about-lastfm-container">
+  <div class="about-lastfm-content">
+    <h2 class="about-lastfm-title anchored">What is Last.FM?</h2>
+    <p class="about-lastfm-text">
+      Last.fm is a music tracking service that logs—or "scrobbles"—every song you play across platforms into a personalized listening history. Unlike traditional music billboards that measure commercial sales, streaming promotions, and radio airplay driven by passive listeners, Last.fm reflects the habits of passionate, dedicated music enthusiasts. Because listeners intentionally track their libraries and dive deep into full artist catalogs over years, Last.fm data highlights enduring favorites and diverse, underground tastes rather than fleeting viral hits.
+    </p>
+
+    <div class="genre-simulations-section">
+      <div class="genre-grid-container">
+        <div class="genre-sim-item" id="genre-sim-rock">
+          <div class="mini-simulation-header">
+            <div class="simulation-title">Rock</div>
+            <div class="simulation-subtitle">top 25 albums</div>
+          </div>
+        </div>
+        <div class="genre-sim-item" id="genre-sim-electronic">
+          <div class="mini-simulation-header">
+            <div class="simulation-title">Electronic</div>
+            <div class="simulation-subtitle">top 25 albums</div>
+          </div>
+        </div>
+        <div class="genre-sim-item" id="genre-sim-pop">
+          <div class="mini-simulation-header">
+            <div class="simulation-title">Pop</div>
+            <div class="simulation-subtitle">top 25 albums</div>
+          </div>
+        </div>
+        <div class="genre-sim-item" id="genre-sim-indie">
+          <div class="mini-simulation-header">
+            <div class="simulation-title">Indie</div>
+            <div class="simulation-subtitle">top 25 albums</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="about-lastfm-text cataloguing-text">
+      Unlike algorithmic platforms with rigid genre taxonomies, Last.fm’s catalog is entirely community-built. Through collaborative "folksonomy," millions of listeners tag, correct, and catalogue tracks organically—capturing everything from broad global movements like <em>rock</em> and <em>electronic</em> to hyper-niche microgenres and local basement scenes. With user-curated album notes, artist wikis, and discography archives spanning decades, Last.fm serves as one of the most extensive, crowd-powered music databases in existence.
+    </p>
+  </div>
+</section>
 </div>
 <div id="scrobbles-tab-view" class="tab-view" style="display: none; width: 100%;">
   <div id="scrobbles-search-container" style="min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 20px 16px;">
@@ -121,7 +164,7 @@ view my scrobbles
 </div>
 
 <!-- Floating bottom settings tab (gear icon) -->
-<div class="settings-dock">
+<div id="settings-dock" class="settings-dock" style="display: none;">
   <button id="settings-tab-btn" class="settings-tab-btn" type="button" aria-label="Settings" title="simulation settings">
     <svg class="settings-gear-icon" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"></circle>
@@ -152,6 +195,14 @@ view my scrobbles
   </div>
 
   <!-- Dynamics controls (on both tabs) -->
+  <div class="settings-group">
+    <div class="settings-group-label">
+      <span>albums displayed</span>
+      <span id="settings-count-val" class="settings-group-value">50</span>
+    </div>
+    <input id="settings-count-slider" class="settings-range" type="range" min="10" max="100" step="5" value="50">
+  </div>
+
   <div class="settings-group">
     <div class="settings-group-label">
       <span>size dynamics</span>
@@ -199,12 +250,18 @@ view my scrobbles
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="home-chart.js"></script>
 <script>
+  let currentTab = "home";
+
   function showTab(tabName) {
+    currentTab = tabName;
     const homeView = document.getElementById("home-tab-view");
     const scrobblesView = document.getElementById("scrobbles-tab-view");
     const navHome = document.getElementById("nav-home");
     const navScrobbles = document.getElementById("nav-scrobbles");
     const settingsUserGroup = document.getElementById("settings-user-group");
+    const settingsDock = document.getElementById("settings-dock");
+    const settingsPanel = document.getElementById("settings-panel");
+    const settingsBackdrop = document.getElementById("settings-backdrop");
 
     if (tabName === "scrobbles") {
       if (homeView) homeView.style.display = "none";
@@ -212,6 +269,7 @@ view my scrobbles
       navHome?.classList.remove("active");
       navScrobbles?.classList.add("active");
       if (settingsUserGroup) settingsUserGroup.style.display = "block";
+      if (settingsDock) settingsDock.style.display = "flex";
       window.refreshScrobblesChartDimensions?.();
     } else {
       if (scrobblesView) scrobblesView.style.display = "none";
@@ -219,7 +277,14 @@ view my scrobbles
       navScrobbles?.classList.remove("active");
       navHome?.classList.add("active");
       if (settingsUserGroup) settingsUserGroup.style.display = "none";
+      if (settingsDock) settingsDock.style.display = "none";
+      settingsPanel?.classList.remove("open");
+      settingsBackdrop?.classList.remove("open");
       window.refreshHomeChartDimensions?.();
+    }
+
+    if (typeof window.syncChartSettingsControls === "function") {
+      window.syncChartSettingsControls();
     }
   }
 
@@ -252,6 +317,8 @@ view my scrobbles
     const settingsPanel = document.getElementById("settings-panel");
     const settingsBackdrop = document.getElementById("settings-backdrop");
     const settingsCloseBtn = document.getElementById("settings-close-btn");
+    const countSlider = document.getElementById("settings-count-slider");
+    const countVal = document.getElementById("settings-count-val");
     const sizeSlider = document.getElementById("settings-size-slider");
     const sizeVal = document.getElementById("settings-size-val");
     const gravdynSlider = document.getElementById("settings-gravdyn-slider");
@@ -283,6 +350,15 @@ view my scrobbles
       }
     });
 
+    // Album count settings (defaults to 50, slider allows up to 100)
+    const defaultCounts = { home: 50, scrobbles: 50 };
+    let currentCounts = Object.assign({}, defaultCounts);
+    try {
+      const savedCounts = JSON.parse(localStorage.getItem("chartfm_counts") || "null");
+      if (savedCounts) currentCounts = Object.assign({}, defaultCounts, savedCounts);
+    } catch (e) {}
+    window.__chartCounts = Object.assign({}, currentCounts);
+
     // Default and current physics state
     const defaultPhysics = { attraction: -15, minDistance: 2, gravity: 0.07, sizeScale: 1.0, gravityDynamics: 1.0 };
     let currentPhysics = Object.assign({}, defaultPhysics);
@@ -294,6 +370,11 @@ view my scrobbles
     window.__chartPhysics = Object.assign({}, currentPhysics);
 
     function syncControls() {
+      if (countSlider && countVal) {
+        const cnt = currentCounts[currentTab] !== undefined ? currentCounts[currentTab] : 50;
+        countSlider.value = cnt.toString();
+        countVal.textContent = cnt.toString();
+      }
       if (sizeSlider && sizeVal) {
         const sz = currentPhysics.sizeScale !== undefined ? currentPhysics.sizeScale : 1.0;
         sizeSlider.value = sz.toString();
@@ -321,6 +402,7 @@ view my scrobbles
       }
     }
 
+    window.syncChartSettingsControls = syncControls;
     syncControls();
 
     function emitPhysicsChange() {
@@ -330,6 +412,17 @@ view my scrobbles
       } catch (e) {}
       window.dispatchEvent(new CustomEvent("chartfm-physics-change", { detail: currentPhysics }));
     }
+
+    countSlider?.addEventListener("input", (e) => {
+      const val = parseInt(e.target.value, 10) || 50;
+      currentCounts[currentTab] = val;
+      if (countVal) countVal.textContent = val.toString();
+      window.__chartCounts = Object.assign({}, currentCounts);
+      try {
+        localStorage.setItem("chartfm_counts", JSON.stringify(currentCounts));
+      } catch (err) {}
+      window.dispatchEvent(new CustomEvent("chartfm-count-change", { detail: { tab: currentTab, count: val } }));
+    });
 
     sizeSlider?.addEventListener("input", (e) => {
       const val = parseFloat(e.target.value) || 0;
@@ -368,8 +461,15 @@ view my scrobbles
 
     resetBtn?.addEventListener("click", () => {
       currentPhysics = Object.assign({}, defaultPhysics);
+      currentCounts = Object.assign({}, defaultCounts);
+      window.__chartCounts = Object.assign({}, currentCounts);
+      try {
+        localStorage.setItem("chartfm_physics", JSON.stringify(currentPhysics));
+        localStorage.setItem("chartfm_counts", JSON.stringify(currentCounts));
+      } catch (e) {}
       syncControls();
       emitPhysicsChange();
+      window.dispatchEvent(new CustomEvent("chartfm-count-change", { detail: { tab: currentTab, count: currentCounts[currentTab] } }));
     });
 
     // --- User Scrobbles Lookup ---

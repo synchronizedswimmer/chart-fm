@@ -36,8 +36,8 @@
     });
   }
 
-  // Fetch top 50 albums worldwide
-  async function fetchTop50Albums() {
+  // Fetch top albums worldwide (candidate pool)
+  async function fetchTopAlbums() {
     // 1. Try local top50.json first for instant zero-latency loading
     try {
       const res = await fetch("top50.json");
@@ -54,7 +54,7 @@
     // 2. Fallback to live Last.fm API
     try {
       const apiKey = "b914193d6c62aabcd83adf2b6c457a5f";
-      const artistUrl = `https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=${apiKey}&format=json&limit=55`;
+      const artistUrl = `https://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=${apiKey}&format=json&limit=160`;
       const artistRes = await fetch(artistUrl);
       const artistData = await artistRes.json();
       const artists = artistData?.artists?.artist || [];
@@ -62,42 +62,47 @@
       const albumPromises = artists.map(async (art, idx) => {
         try {
           const aName = encodeURIComponent(art.name);
-          const aUrl = `https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&artist=${aName}&api_key=${apiKey}&format=json&limit=1`;
+          const aUrl = `https://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&artist=${aName}&api_key=${apiKey}&format=json&limit=2`;
           const aRes = await fetch(aUrl);
           const aData = await aRes.json();
-          const alb = aData?.topalbums?.album?.[0];
-          if (!alb) return null;
+          const topalbs = aData?.topalbums?.album || [];
+          const albumList = Array.isArray(topalbs) ? topalbs : [topalbs];
+          for (const alb of albumList) {
+            if (!alb) continue;
+            const images = alb.image || [];
+            const imgList = Array.isArray(images) ? images : [images];
+            const urls = imgList.map((img) => (img?.["#text"] || "").trim()).filter(Boolean);
+            const validUrls = urls.filter((u) => !u.includes("2a96cbd8b46e442fc41c2b86b821562f") && !u.includes("noimage"));
+            if (!validUrls.length) continue;
 
-          const images = alb.image || [];
-          const imgList = Array.isArray(images) ? images : [images];
-          const urls = imgList.map((img) => (img?.["#text"] || "").trim()).filter(Boolean);
-          const validUrls = urls.filter((u) => !u.includes("2a96cbd8b46e442fc41c2b86b821562f") && !u.includes("noimage"));
-          if (!validUrls.length) return null;
-
-          return {
-            rank: idx + 1,
-            name: alb.name || "",
-            artist: art.name || "",
-            playcount: alb.playcount || art.playcount || 0,
-            image: validUrls[validUrls.length - 1]
-          };
+            return {
+              rank: idx + 1,
+              name: alb.name || "",
+              artist: art.name || "",
+              playcount: Number(alb.playcount) || Number(art.playcount) || 0,
+              image: validUrls[validUrls.length - 1]
+            };
+          }
+          return null;
         } catch (err) {
           return null;
         }
       });
 
       const resolved = await Promise.all(albumPromises);
-      return resolved.filter(Boolean).slice(0, 50);
+      return resolved.filter(Boolean);
     } catch (err) {
       console.error("Failed to fetch live Last.fm top albums", err);
       return [];
     }
   }
 
-  // Fetch top albums for a specific Last.fm user
-  async function fetchUserTop50Albums(username) {
+  const fetchTop50Albums = fetchTopAlbums;
+
+  // Fetch top albums for a specific Last.fm user (candidate pool up to 200)
+  async function fetchUserAlbums(username) {
     const apiKey = "b914193d6c62aabcd83adf2b6c457a5f";
-    const url = `https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${encodeURIComponent(username)}&api_key=${apiKey}&format=json&limit=60&period=overall`;
+    const url = `https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${encodeURIComponent(username)}&api_key=${apiKey}&format=json&limit=200&period=overall`;
     const res = await fetch(url);
     const data = await res.json();
     if (!res.ok || data.error) {
@@ -132,6 +137,8 @@
     }
     return albums;
   }
+
+  const fetchUserTop50Albums = fetchUserAlbums;
 
   // Album detail caching and modal display
   const albumDetailCache = new Map();
@@ -234,7 +241,11 @@
     const playcountNum = Number(album.playcount) || 0;
     const playcountStr = playcountNum.toLocaleString();
     const rankBadge = album.rank
-      ? (album.user ? `#${album.rank} on ${album.user}'s Last.fm` : `#${album.rank} Worldwide on Last.fm`)
+      ? (album.user
+          ? `#${album.rank} on ${album.user}'s Last.fm`
+          : (album.genre
+              ? `#${album.rank} in ${album.genre} on Last.fm`
+              : `#${album.rank} Worldwide on Last.fm`))
       : "Featured on Last.fm";
 
     const statsHtml = album.user
@@ -256,7 +267,7 @@
         <div class="album-modal-stats">
           <div class="album-modal-stat-box">
             <div class="album-modal-stat-label">Total Scrobbles</div>
-            <div class="album-modal-stat-value">${playcountStr}</div>
+            <div class="album-modal-stat-value" id="modal-scrobbles">${playcountStr}</div>
           </div>
           <div class="album-modal-stat-box">
             <div class="album-modal-stat-label">Total Listeners</div>
@@ -321,6 +332,10 @@
       if (info) {
         const listenersNum = Number(info.listeners) || 0;
         const globalPlaycount = Number(info.playcount) || playcountNum;
+        const scrobblesEl = document.getElementById("modal-scrobbles");
+        if (scrobblesEl && globalPlaycount) {
+          scrobblesEl.textContent = globalPlaycount.toLocaleString();
+        }
         if (listenersEl) {
           listenersEl.textContent = listenersNum ? listenersNum.toLocaleString() : "N/A";
         }
@@ -363,16 +378,19 @@
     albums,
     titleText,
     subtitleText,
-    onChangeUser
+    onChangeUser,
+    initialTargetCount = 50,
+    tabName = "home"
   }) {
     let simulation = null;
     let nodes = [];
     let cancelled = false;
     let spawnTimer = null;
     let focusedItem = null;
+    let targetCount = Math.max(5, initialTargetCount);
 
     mountElement.innerHTML = `
-      <div class="simulation-chart-container" style="position: relative; width: 100%; height: calc(100vh - 30px); min-height: 500px; margin: 0 auto; user-select: none; overflow: hidden; display: block;">
+      <div class="simulation-chart-container" style="position: relative; width: 100%; height: 100vh; min-height: 500px; margin: 0 auto; user-select: none; overflow: hidden; display: block;">
         <div class="simulation-header">
           <div class="simulation-title">${titleText}</div>
           <div class="simulation-subtitle">${subtitleText}</div>
@@ -385,17 +403,18 @@
     const backdropOverlay = container.querySelector(".chart-backdrop-overlay");
 
     let width = Math.max(300, Math.floor(container.clientWidth || window.innerWidth));
-    let height = Math.max(450, Math.floor(window.innerHeight - 30));
+    let height = Math.max(500, Math.floor(window.innerHeight));
+    let centerY = (height + 120) / 2;
     container.style.height = `${height}px`;
 
     function updateDimensions() {
       if (!container || !container.isConnected) return;
       if (container.offsetWidth === 0 && container.offsetHeight === 0) return;
       width = Math.max(300, Math.floor(container.clientWidth || window.innerWidth));
-      height = Math.max(450, Math.floor(window.innerHeight - 30));
+      height = Math.max(500, Math.floor(window.innerHeight));
+      centerY = (height + 120) / 2;
       container.style.height = `${height}px`;
 
-      const centerY = (height + 70) / 2;
       if (simulation) {
         simulation
           .force("center", d3.forceCenter(width / 2, centerY))
@@ -407,13 +426,13 @@
 
     window.addEventListener("resize", updateDimensions);
 
-    // Sort by playcount descending and assign rank (1..50)
-    const finalAlbums = albums.slice().sort((a, b) => (Number(b.playcount) || 0) - (Number(a.playcount) || 0)).slice(0, 50);
-    finalAlbums.forEach((alb, i) => alb.rank = i + 1);
+    // Candidate albums pool sorted by playcount descending
+    const candidateAlbums = albums.slice().sort((a, b) => (Number(b.playcount) || 0) - (Number(a.playcount) || 0));
+    candidateAlbums.forEach((alb, i) => { alb.rank = i + 1; });
 
-    const playcounts = finalAlbums.map((a) => Number(a.playcount) || 0);
-    const minP = Math.min(...playcounts);
-    const maxP = Math.max(...playcounts);
+    const playcounts = candidateAlbums.slice(0, 160).map((a) => Number(a.playcount) || 0);
+    const minP = playcounts.length ? Math.min(...playcounts) : 0;
+    const maxP = playcounts.length ? Math.max(...playcounts) : 1;
     const minSqrt = Math.sqrt(Math.max(0, minP));
     const maxSqrt = Math.sqrt(Math.max(0, maxP));
 
@@ -427,7 +446,51 @@
       return Math.max(16, Math.min(130, Math.round(midSize + diff)));
     }
 
-    const centerY = (height + 70) / 2;
+    const failedAlbumKeys = new Set();
+    const prefetchedKeys = new Set();
+    let candidateIndex = 0;
+
+    function getAlbumKey(alb) {
+      if (!alb) return "";
+      const art = typeof alb.artist === "object" ? (alb.artist.name || "") : (alb.artist || "");
+      return `${art.toLowerCase().trim()}||${(alb.name || "").toLowerCase().trim()}`;
+    }
+
+    function isAlbumValid(alb) {
+      if (!alb || !alb.image) return false;
+      const url = String(alb.image).trim();
+      if (!url) return false;
+      if (url.includes("2a96cbd8b46e442fc41c2b86b821562f") || url.includes("noimage")) return false;
+      if (failedAlbumKeys.has(getAlbumKey(alb))) return false;
+      return true;
+    }
+
+    // Warm the browser image cache in the background for upcoming candidate albums
+    function prefetchCandidatesAhead(count = 25) {
+      for (let i = candidateIndex; i < candidateAlbums.length && i < candidateIndex + count; i++) {
+        const alb = candidateAlbums[i];
+        if (isAlbumValid(alb)) {
+          const key = getAlbumKey(alb);
+          if (!prefetchedKeys.has(key)) {
+            prefetchedKeys.add(key);
+            const preload = new Image();
+            preload.referrerPolicy = "no-referrer";
+            preload.src = alb.image;
+          }
+        }
+      }
+    }
+
+    // Pick next candidate with a valid cover URL
+    function getNextCandidate() {
+      while (candidateIndex < candidateAlbums.length) {
+        const alb = candidateAlbums[candidateIndex++];
+        if (isAlbumValid(alb)) {
+          return alb;
+        }
+      }
+      return null;
+    }
 
     // Create D3 Force Simulation
     nodes = [];
@@ -475,8 +538,8 @@
           }
         }
 
-        const pad = 28;
-        const topPad = 90;
+        const pad = 8;
+        const topPad = 86;
         for (const d of nodes) {
           const half = d.size / 2;
           d.x = Math.max(half + pad, Math.min(width - half - pad, d.x));
@@ -505,17 +568,22 @@
       }
       nodeEl.classList.add("album-focused");
 
-      const isNearBottom = node.y > height * 0.65;
+      const isNearBottom = node.y > height * 0.55;
       const topOrBottom = isNearBottom
         ? `bottom: calc(50% + ${Math.round(node.size * 1.1 + 14)}px);`
         : `top: calc(50% + ${Math.round(node.size * 1.1 + 14)}px);`;
+
+      const cardWidth = 260;
+      const idealCenterX = Math.max(cardWidth / 2 + 16, Math.min(width - cardWidth / 2 - 16, node.x));
+      const deltaX = Math.round(idealCenterX - node.x);
 
       const playcountStr = Number(album.playcount).toLocaleString();
       const rankSubtext = album.user ? `#${album.rank} on ${album.user}'s last.fm` : `#${album.rank} on last.fm`;
 
       const info = document.createElement("div");
       info.className = "album-focus-info";
-      info.style.cssText = `position: absolute; ${topOrBottom} left: 50%; transform: translateX(-50%); width: 280px; text-align: center; color: #ffffff; pointer-events: auto; cursor: pointer; z-index: 1003; animation: focusFadeIn 0.25s ease forwards;`;
+      info.style.setProperty("--shift-x", `${deltaX}px`);
+      info.style.cssText = `position: absolute; ${topOrBottom} left: 50%; width: ${cardWidth}px; text-align: center; color: #ffffff; pointer-events: auto; cursor: pointer; z-index: 1003; --shift-x: ${deltaX}px; animation: focusFadeIn 0.25s ease forwards;`;
       info.innerHTML = `
         <div style="font-weight: 700; font-size: 0.95rem; line-height: 1.25; margin-bottom: 2px; color: #ffffff; text-shadow: 0 2px 8px rgba(0,0,0,0.95);">${album.name}</div>
         <div style="font-size: 0.85rem; color: #ffffff; margin-bottom: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95);">${album.artist}</div>
@@ -539,7 +607,25 @@
       if (info) info.remove();
     }
 
-    let nextAlbumIndex = 0;
+    function removeNode(node) {
+      const idx = nodes.indexOf(node);
+      if (idx !== -1) {
+        nodes.splice(idx, 1);
+      }
+      if (focusedItem && focusedItem.node === node) {
+        deactivateFocus(node, node.el);
+      }
+      if (node.el) {
+        node.el.style.transition = "transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease";
+        node.el.style.opacity = "0";
+        node.el.style.transform += " scale(0.15)";
+        setTimeout(() => {
+          if (node.el && node.el.parentNode) {
+            node.el.parentNode.removeChild(node.el);
+          }
+        }, 280);
+      }
+    }
 
     function addNode(album) {
       const size = getAlbumSize(album);
@@ -549,12 +635,12 @@
         : (75 + Math.sqrt(nodes.length) * 26 + Math.random() * 15);
 
       const node = {
-        id: nodes.length,
+        id: nodes.length + Math.random(),
         size: size,
         radius: (size * 0.5) + (currentPhysics.minDistance * 0.5),
         album: album,
         x: width / 2 + Math.cos(angle) * dist,
-        y: ((height + 70) / 2) + Math.sin(angle) * dist,
+        y: centerY + Math.sin(angle) * dist,
         vx: (Math.random() - 0.5) * 2,
         vy: (Math.random() - 0.5) * 2
       };
@@ -567,9 +653,30 @@
       inner.className = "album-card-inner";
 
       const img = document.createElement("img");
-      img.src = album.image;
-      img.alt = album.name;
+      img.referrerPolicy = "no-referrer";
+      img.loading = "eager";
+      img.decoding = "async";
+      img.alt = album.name || "Album";
       img.style.cssText = "width: 100%; height: 100%; object-fit: cover; display: block;";
+
+      img.onerror = () => {
+        // If image failed to load in the browser, skip this album entirely and add a replacement immediately
+        const key = getAlbumKey(album);
+        failedAlbumKeys.add(key);
+        removeNode(node);
+        simulation.nodes(nodes);
+        simulation.alpha(0.3).restart();
+        if (nodes.length < targetCount && !cancelled) {
+          const replacement = getNextCandidate();
+          if (replacement && !cancelled) {
+            addNode(replacement);
+            simulation.nodes(nodes);
+            simulation.alpha(0.3).restart();
+          }
+        }
+      };
+      img.src = album.image;
+
       inner.appendChild(img);
       nodeEl.appendChild(inner);
 
@@ -668,28 +775,65 @@
       simulation.alpha(0.65).restart();
     }
 
-    function addNextNode() {
-      if (nextAlbumIndex >= finalAlbums.length) return;
-      const alb = finalAlbums[nextAlbumIndex++];
-      addNode(alb);
-    }
+    let isSpawning = false;
 
-    function spawnStep() {
-      if (cancelled || nodes.length >= finalAlbums.length) {
-        spawnTimer = null;
+    function spawnLoop() {
+      if (cancelled || isSpawning || nodes.length >= targetCount) {
         return;
       }
-      addNextNode();
-      if (nodes.length >= finalAlbums.length) {
-        spawnTimer = null;
-        return;
+      isSpawning = true;
+      prefetchCandidatesAhead(30);
+
+      function step() {
+        if (cancelled || nodes.length >= targetCount) {
+          isSpawning = false;
+          spawnTimer = null;
+          return;
+        }
+
+        const alb = getNextCandidate();
+        if (!alb) {
+          isSpawning = false;
+          spawnTimer = null;
+          return;
+        }
+
+        addNode(alb);
+        prefetchCandidatesAhead(20);
+
+        if (nodes.length < targetCount) {
+          const progress = nodes.length / Math.max(1, targetCount);
+          // Albums pop in slowly at first (~265ms), then load faster and faster down to ~14ms
+          const delay = Math.round(14 + 250 * Math.pow(1 - progress, 2.5));
+          spawnTimer = setTimeout(step, delay);
+        } else {
+          isSpawning = false;
+          spawnTimer = null;
+        }
       }
-      const progress = nodes.length / finalAlbums.length;
-      const delay = Math.round(15 + 465 * Math.pow(1 - progress, 2.4));
-      spawnTimer = setTimeout(spawnStep, delay);
+
+      step();
     }
 
-    spawnStep();
+    function setTargetCount(newCount) {
+      targetCount = Math.max(5, Math.min(100, newCount));
+      prefetchCandidatesAhead(35);
+
+      if (nodes.length < targetCount) {
+        spawnLoop();
+      } else if (nodes.length > targetCount) {
+        const excess = nodes.length - targetCount;
+        const toRemove = nodes.slice().sort((a, b) => (b.album?.rank || 0) - (a.album?.rank || 0)).slice(0, excess);
+        for (const n of toRemove) {
+          removeNode(n);
+        }
+        simulation.nodes(nodes);
+        simulation.alpha(0.35).restart();
+      }
+    }
+
+    // Start initial spawn sequence
+    spawnLoop();
 
     // Listen to physics adjustments from settings
     const onPhysicsChange = (e) => {
@@ -713,7 +857,7 @@
       simulation.force("charge", d3.forceManyBody().strength(currentPhysics.attraction).distanceMax(140));
       simulation.force("collide", d3.forceCollide().radius((d) => d.radius).strength(0.8).iterations(3));
       simulation.force("x", d3.forceX(width / 2).strength(getNodeGravity));
-      simulation.force("y", d3.forceY((height + 70) / 2).strength(getNodeGravity));
+      simulation.force("y", d3.forceY(centerY).strength(getNodeGravity));
       simulation.alpha(0.35).restart();
     };
 
@@ -735,8 +879,328 @@
 
     return {
       refresh: updateDimensions,
-      destroy: destroy
+      destroy: destroy,
+      setTargetCount: setTargetCount
     };
+  }
+
+  // --- Global Event Listener for Album Count Changes from Settings ---
+  window.addEventListener("chartfm-count-change", (e) => {
+    const detail = e.detail;
+    if (!detail) return;
+    if (detail.tab === "home" && homeInstance) {
+      homeInstance.setTargetCount(detail.count);
+    } else if (detail.tab === "scrobbles" && userInstance) {
+      userInstance.setTargetCount(detail.count);
+    }
+  });
+
+  // --- Mini Genre Simulation Factory ---
+  function createMiniGenreSimulation({ mountElement, albums, genreName }) {
+    if (!mountElement) return null;
+    let nodes = [];
+    let isSpawning = false;
+    let spawnTimer = null;
+    let cancelled = false;
+    let focusedItem = null;
+
+    let width = Math.max(200, mountElement.clientWidth || 340);
+    let height = Math.max(200, mountElement.clientHeight || 440);
+    let centerX = width / 2;
+    let centerY = (height + 42) / 2;
+
+    const simulation = d3
+      .forceSimulation(nodes)
+      .alphaDecay(0.02)
+      .velocityDecay(0.38)
+      .force("center", d3.forceCenter(centerX, centerY))
+      .force("charge", d3.forceManyBody().strength(-15).distanceMax(140))
+      .force("collide", d3.forceCollide((d) => (d.size * 0.5) + 2.5).strength(0.85).iterations(2))
+      .force("x", d3.forceX(centerX).strength(0.065))
+      .force("y", d3.forceY(centerY).strength(0.065));
+
+    function updateDims() {
+      if (!mountElement || !mountElement.isConnected) return;
+      width = Math.max(200, mountElement.clientWidth || 340);
+      height = Math.max(200, mountElement.clientHeight || 440);
+      centerX = width / 2;
+      centerY = (height + 42) / 2;
+      simulation
+        .force("center", d3.forceCenter(centerX, centerY))
+        .force("x", d3.forceX(centerX).strength(0.065))
+        .force("y", d3.forceY(centerY).strength(0.065));
+      simulation.alpha(0.2).restart();
+    }
+
+    window.addEventListener("resize", updateDims);
+
+    const backdropOverlay = document.createElement("div");
+    backdropOverlay.className = "chart-backdrop-overlay";
+    backdropOverlay.style.cssText = "position: absolute; inset: 0; background: rgba(0, 0, 0, 0.78); opacity: 0; pointer-events: none; transition: opacity 0.35s ease; z-index: 1000;";
+    mountElement.appendChild(backdropOverlay);
+
+    backdropOverlay.addEventListener("click", () => {
+      if (focusedItem) deactivateMiniFocus(focusedItem.node, focusedItem.el);
+    });
+
+    mountElement.addEventListener("mouseleave", () => {
+      if (focusedItem) deactivateMiniFocus(focusedItem.node, focusedItem.el);
+    });
+
+    function activateMiniFocus(node, nodeEl, album) {
+      if (focusedItem) deactivateMiniFocus(focusedItem.node, focusedItem.el);
+      focusedItem = { node, el: nodeEl, album };
+      if (backdropOverlay) {
+        backdropOverlay.style.opacity = "1";
+        backdropOverlay.style.pointerEvents = "auto";
+        backdropOverlay.style.cursor = "pointer";
+      }
+      nodeEl.classList.add("album-focused");
+
+      const isNearBottom = node.y > height * 0.52;
+      const topOrBottom = isNearBottom
+        ? `bottom: calc(50% + ${Math.round(node.size * 0.95 + 10)}px);`
+        : `top: calc(50% + ${Math.round(node.size * 0.95 + 10)}px);`;
+
+      const cardWidth = 210;
+      const idealCenterX = Math.max(cardWidth / 2 + 10, Math.min(width - cardWidth / 2 - 10, node.x));
+      const deltaX = Math.round(idealCenterX - node.x);
+
+      const playcountNum = Number(album.playcount) || 0;
+      const playcountStr = playcountNum.toLocaleString();
+      const rankSubtext = `#${album.rank} in ${genreName || "Genre"} on Last.fm`;
+
+      const info = document.createElement("div");
+      info.className = "album-focus-info mini-focus-info";
+      info.style.setProperty("--shift-x", `${deltaX}px`);
+      info.style.cssText = `position: absolute; ${topOrBottom} left: 50%; width: ${cardWidth}px; text-align: center; color: #ffffff; pointer-events: auto; cursor: pointer; z-index: 1003; --shift-x: ${deltaX}px; animation: focusFadeIn 0.22s ease forwards;`;
+      info.innerHTML = `
+        <div style="font-weight: 700; font-size: 0.88rem; line-height: 1.25; margin-bottom: 2px; color: #ffffff; text-shadow: 0 2px 8px rgba(0,0,0,0.95);">${album.name}</div>
+        <div style="font-size: 0.78rem; color: #ffffff; margin-bottom: 2px; text-shadow: 0 2px 8px rgba(0,0,0,0.95);">${album.artist}</div>
+        ${playcountNum ? `<div style="font-size: 0.76rem; color: #ffffff; margin-bottom: 3px; text-shadow: 0 2px 8px rgba(0,0,0,0.95);">scrobbled ${playcountStr} times</div>` : ""}
+        <div style="font-size: 0.74rem; color: #adb5bd; text-shadow: 0 2px 8px rgba(0,0,0,0.95);">${rankSubtext}</div>
+        <div class="album-focus-hint" style="font-size: 0.7rem;">click to view album info &rarr;</div>
+      `;
+      nodeEl.appendChild(info);
+    }
+
+    function deactivateMiniFocus(node, nodeEl) {
+      if (focusedItem && focusedItem.el === nodeEl) {
+        focusedItem = null;
+      }
+      if (backdropOverlay) {
+        backdropOverlay.style.opacity = "0";
+        backdropOverlay.style.pointerEvents = "none";
+      }
+      nodeEl.classList.remove("album-focused");
+      const info = nodeEl.querySelector(".album-focus-info");
+      if (info) info.remove();
+    }
+
+    simulation.on("tick", () => {
+      const pad = 12;
+      const topPad = 54;
+      const btmPad = 12;
+      for (const d of nodes) {
+        const half = d.size / 2;
+        d.x = Math.max(half + pad, Math.min(width - half - pad, d.x));
+        d.y = Math.max(half + topPad, Math.min(height - half - btmPad, d.y));
+        if (d.el) {
+          d.el.style.transform = `translate(${d.x - half}px, ${d.y - half}px)`;
+        }
+      }
+    });
+
+    const targetList = (albums || []).slice(0, 25);
+    const targetCount = targetList.length;
+
+    function addMiniNode(album) {
+      if (cancelled) return;
+      const rank = album.rank || (nodes.length + 1);
+      const size = Math.round(56 - ((rank - 1) / 24) * 22);
+      const angle = Math.random() * Math.PI * 2;
+      const dist = nodes.length < 3 ? 12 + Math.random() * 18 : 42 + Math.sqrt(nodes.length) * 14;
+
+      const node = {
+        id: nodes.length + Math.random(),
+        size: size,
+        album: album,
+        x: centerX + Math.cos(angle) * dist,
+        y: centerY + Math.sin(angle) * dist,
+        vx: (Math.random() - 0.5) * 1.5,
+        vy: (Math.random() - 0.5) * 1.5
+      };
+
+      const nodeEl = document.createElement("div");
+      nodeEl.className = "album-node mini-album-node";
+      nodeEl.style.cssText = `position: absolute; top: 0; left: 0; width: ${size}px; height: ${size}px; cursor: grab; will-change: transform;`;
+
+      const inner = document.createElement("div");
+      inner.className = "album-card-inner";
+
+      const img = document.createElement("img");
+      img.referrerPolicy = "no-referrer";
+      img.loading = "lazy";
+      img.alt = "";
+      img.style.cssText = "width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 3px; pointer-events: none; -webkit-user-drag: none; user-select: none;";
+      img.src = album.image;
+
+      inner.appendChild(img);
+      nodeEl.appendChild(inner);
+
+      let isDragging = false;
+      let dragMoved = false;
+      let isHovering = false;
+      let hoverTimeout = null;
+      let leaveTimeout = null;
+
+      nodeEl.addEventListener("mouseenter", () => {
+        isHovering = true;
+        if (leaveTimeout) {
+          clearTimeout(leaveTimeout);
+          leaveTimeout = null;
+        }
+        if (!nodeEl.classList.contains("album-focused") && !isDragging) {
+          hoverTimeout = setTimeout(() => {
+            if (isHovering && !isDragging) {
+              activateMiniFocus(node, nodeEl, album);
+            }
+          }, 320);
+        }
+      });
+
+      nodeEl.addEventListener("mouseleave", () => {
+        isHovering = false;
+        if (hoverTimeout) {
+          clearTimeout(hoverTimeout);
+          hoverTimeout = null;
+        }
+        if (nodeEl.classList.contains("album-focused")) {
+          leaveTimeout = setTimeout(() => {
+            if (!isHovering && nodeEl.classList.contains("album-focused")) {
+              deactivateMiniFocus(node, nodeEl);
+            }
+          }, 300);
+        }
+      });
+
+      d3.select(nodeEl).call(
+        d3.drag()
+          .on("start", (event) => {
+            isDragging = true;
+            dragMoved = false;
+            if (hoverTimeout) {
+              clearTimeout(hoverTimeout);
+              hoverTimeout = null;
+            }
+            if (nodeEl.classList.contains("album-focused")) {
+              deactivateMiniFocus(node, nodeEl);
+            }
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            node.fx = node.x;
+            node.fy = node.y;
+            nodeEl.style.cursor = "grabbing";
+            nodeEl.style.zIndex = "50";
+          })
+          .on("drag", (event) => {
+            if (Math.abs(event.dx) > 1 || Math.abs(event.dy) > 1) dragMoved = true;
+            node.fx = event.x;
+            node.fy = event.y;
+          })
+          .on("end", (event) => {
+            isDragging = false;
+            if (!event.active) simulation.alphaTarget(0);
+            node.fx = null;
+            node.fy = null;
+            nodeEl.style.cursor = "grab";
+            nodeEl.style.zIndex = "";
+          })
+      );
+
+      nodeEl.addEventListener("click", (e) => {
+        if (dragMoved) return;
+        e.stopPropagation();
+        openAlbumModal(album);
+        if (nodeEl.classList.contains("album-focused")) {
+          deactivateMiniFocus(node, nodeEl);
+        }
+      });
+
+      node.el = nodeEl;
+      nodes.push(node);
+      mountElement.appendChild(nodeEl);
+      simulation.nodes(nodes);
+      simulation.alpha(0.55).restart();
+    }
+
+    function spawnMiniLoop() {
+      if (cancelled || isSpawning || nodes.length >= targetCount) return;
+      isSpawning = true;
+
+      function step() {
+        if (cancelled || nodes.length >= targetCount) {
+          isSpawning = false;
+          spawnTimer = null;
+          return;
+        }
+        const alb = targetList[nodes.length];
+        if (!alb) {
+          isSpawning = false;
+          spawnTimer = null;
+          return;
+        }
+        addMiniNode(alb);
+        if (nodes.length < targetCount) {
+          const progress = nodes.length / Math.max(1, targetCount);
+          const delay = Math.round(18 + 180 * Math.pow(1 - progress, 2.2));
+          spawnTimer = setTimeout(step, delay);
+        } else {
+          isSpawning = false;
+          spawnTimer = null;
+        }
+      }
+      step();
+    }
+
+    spawnMiniLoop();
+
+    return {
+      destroy() {
+        cancelled = true;
+        if (spawnTimer) clearTimeout(spawnTimer);
+        if (focusedItem) deactivateMiniFocus(focusedItem.node, focusedItem.el);
+        simulation.stop();
+        window.removeEventListener("resize", updateDims);
+      }
+    };
+  }
+
+  let genreSimInstances = [];
+
+  async function initGenreSimulations() {
+    let genreData = null;
+    try {
+      const res = await fetch("genres_top25.json");
+      if (res.ok) {
+        genreData = await res.json();
+      }
+    } catch (e) {
+      console.warn("Could not load genres_top25.json", e);
+    }
+    if (!genreData) return;
+
+    const genreNames = { rock: "Rock", electronic: "Electronic", pop: "Pop", indie: "Indie" };
+    const genres = ["rock", "electronic", "pop", "indie"];
+    for (const g of genres) {
+      const mount = document.getElementById(`genre-sim-${g}`);
+      const list = genreData[g];
+      const gName = genreNames[g] || g;
+      if (mount && list && list.length) {
+        list.forEach((alb) => { alb.genre = gName; });
+        const sim = createMiniGenreSimulation({ mountElement: mount, albums: list, genreName: gName });
+        if (sim) genreSimInstances.push(sim);
+      }
+    }
   }
 
   // --- Home Tab Simulation Instance ---
@@ -748,36 +1212,42 @@
     if (!homeView || isHomeInitialized) return;
     isHomeInitialized = true;
 
-    homeView.innerHTML = `
-      <div style="position: relative; width: 100%; height: calc(100vh - 30px); min-height: 500px; display: flex; align-items: center; justify-content: center;">
+    let chartContainer = homeView.querySelector("#home-chart-container");
+    if (!chartContainer) {
+      chartContainer = document.createElement("div");
+      chartContainer.id = "home-chart-container";
+      homeView.prepend(chartContainer);
+    }
+
+    chartContainer.innerHTML = `
+      <div style="position: relative; width: 100%; height: 100vh; min-height: 500px; display: flex; align-items: center; justify-content: center;">
         <div class="chart-loading-indicator" style="color: #888; font-style: italic; font-size: 0.88rem; letter-spacing: 0.5px; pointer-events: none; user-select: none;">
           loading<span class="loading-dot-1">.</span><span class="loading-dot-2">.</span><span class="loading-dot-3">.</span>
         </div>
       </div>
     `;
 
-    const albums = await fetchTop50Albums();
+    const albums = await fetchTopAlbums();
     if (!albums || !albums.length) {
-      homeView.innerHTML = `<div style="text-align: center; color: #888; padding-top: 100px;">unable to load top albums currently.</div>`;
+      chartContainer.innerHTML = `<div style="text-align: center; color: #888; padding-top: 100px;">unable to load top albums currently.</div>`;
       return;
     }
 
-    const verifiedAlbums = [];
-    await Promise.all(
-      albums.map(async (alb) => {
-        const ok = await preloadImage(alb.image);
-        if (ok) verifiedAlbums.push(alb);
-      })
-    );
+    const initialCount = (window.__chartCounts && window.__chartCounts.home !== undefined) ? window.__chartCounts.home : 50;
 
     homeInstance = createAlbumSimulation({
-      mountElement: homeView,
-      albums: verifiedAlbums,
-      titleText: "last.fm's most scrobbled albums",
-      subtitleText: "hover over an album for info, click on it to view more"
+      mountElement: chartContainer,
+      albums: albums,
+      titleText: "Last.fm's Top 50 Albums",
+      subtitleText: "hover over an album for info, click on it to view more",
+      initialTargetCount: initialCount,
+      tabName: "home"
     });
 
     window.refreshHomeChartDimensions = homeInstance.refresh;
+
+    // Initialize 2x2 top genres mini simulations
+    initGenreSimulations();
   };
 
   // --- User Scrobbles Tab Simulation Instance ---
@@ -790,31 +1260,27 @@
     }
 
     mountElement.innerHTML = `
-      <div style="position: relative; width: 100%; height: calc(100vh - 30px); min-height: 500px; display: flex; align-items: center; justify-content: center;">
+      <div style="position: relative; width: 100%; height: 100vh; min-height: 500px; display: flex; align-items: center; justify-content: center;">
         <div class="chart-loading-indicator" style="color: #888; font-style: italic; font-size: 0.88rem; letter-spacing: 0.5px; pointer-events: none; user-select: none;">
           loading ${username}'s top albums<span class="loading-dot-1">.</span><span class="loading-dot-2">.</span><span class="loading-dot-3">.</span>
         </div>
       </div>
     `;
 
-    const albums = await fetchUserTop50Albums(username);
-    const verifiedAlbums = [];
-    await Promise.all(
-      albums.map(async (alb) => {
-        const ok = await preloadImage(alb.image);
-        if (ok) verifiedAlbums.push(alb);
-      })
-    );
-
-    if (!verifiedAlbums.length) {
-      throw new Error("Could not load album artwork for this user.");
+    const albums = await fetchUserAlbums(username);
+    if (!albums || !albums.length) {
+      throw new Error("No album artwork found for this user's scrobbles.");
     }
+
+    const initialCount = (window.__chartCounts && window.__chartCounts.scrobbles !== undefined) ? window.__chartCounts.scrobbles : 50;
 
     userInstance = createAlbumSimulation({
       mountElement: mountElement,
-      albums: verifiedAlbums,
+      albums: albums,
       titleText: `${username.toLowerCase()}'s most scrobbled albums`,
       subtitleText: "hover over an album for info, click on it to view more",
+      initialTargetCount: initialCount,
+      tabName: "scrobbles",
       onChangeUser: () => {
         if (userInstance) {
           userInstance.destroy();

@@ -80,6 +80,136 @@ a:hover {
   overflow: hidden;
 }
 
+body.has-chart {
+  overflow-x: hidden;
+}
+
+.about-lastfm-container {
+  width: 100%;
+  padding: 36px 24px 96px;
+  background: #09090b;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+.about-lastfm-content {
+  max-width: 960px;
+  width: 100%;
+}
+
+.about-lastfm-title,
+.about-lastfm-text {
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-lastfm-title {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  margin-bottom: 1.1rem;
+}
+
+.about-lastfm-text {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #a1a1aa;
+  margin-bottom: 0;
+}
+
+.genre-simulations-section {
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin-top: 52px;
+  padding-top: 44px;
+}
+
+.genre-grid-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px 36px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .genre-grid-container {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+}
+
+.genre-sim-item {
+  position: relative;
+  width: 100%;
+  height: 440px;
+  background: transparent;
+  overflow: hidden;
+}
+
+.mini-simulation-header {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 100;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.mini-simulation-header .simulation-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.mini-simulation-header .simulation-subtitle {
+  font-size: 0.82rem;
+  color: #a1a1aa;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  text-transform: lowercase;
+  margin-top: 3px;
+  line-height: 1.2;
+}
+
+.mini-focus-info {
+  width: 210px !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 1) !important;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.mini-album-node:not(.album-focused):hover .album-card-inner {
+  transform: scale(1.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.85);
+  z-index: 100;
+}
+
+.mini-album-node.album-focused .album-card-inner {
+  transform: scale(1.85) !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.98), 0 0 28px rgba(0, 0, 0, 0.85);
+  border-radius: 4px;
+}
+
+.album-card-inner img {
+  pointer-events: none !important;
+  -webkit-user-drag: none !important;
+  user-select: none !important;
+}
+
+.cataloguing-text {
+  margin-top: 36px !important;
+}
+
 body.has-chart #title-block-header {
   opacity: 0;
   max-height: 0;
@@ -170,11 +300,10 @@ body.has-chart .search-bar-container {
 }
 
 .simulation-title {
-  font-size: 1.45rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: -0.2px;
-  text-transform: lowercase;
   margin: 0;
   line-height: 1.2;
 }
@@ -211,7 +340,7 @@ body.has-chart .search-bar-container {
     top: 55px;
   }
   .simulation-title {
-    font-size: 1.2rem;
+    font-size: 1.35rem;
   }
   .simulation-subtitle {
     font-size: 0.75rem;
@@ -233,8 +362,18 @@ body.has-chart .search-bar-container {
 }
 
 @keyframes popScale {
-  0% { transform: scale(0.15); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.12);
+    opacity: 0;
+  }
+  68% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes dotPulse {
@@ -260,7 +399,7 @@ body.has-chart .search-bar-container {
   height: 100%;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.22);
-  animation: popScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: popScale 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
 }
 
@@ -279,7 +418,7 @@ body.has-chart .search-bar-container {
 .album-focus-info {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(calc(-50% + var(--shift-x, 0px)), 0);
   width: 280px;
   text-align: center;
   color: #ffffff;
@@ -287,6 +426,8 @@ body.has-chart .search-bar-container {
   cursor: pointer;
   z-index: 1003;
   animation: focusFadeIn 0.25s ease forwards;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .album-focus-hint {
@@ -316,8 +457,8 @@ body.has-chart .search-bar-container {
 }
 
 @keyframes focusFadeIn {
-  0% { opacity: 0; transform: translate(-50%, 6px); }
-  100% { opacity: 1; transform: translate(-50%, 0); }
+  0% { opacity: 0; transform: translate(calc(-50% + var(--shift-x, 0px)), 6px); }
+  100% { opacity: 1; transform: translate(calc(-50% + var(--shift-x, 0px)), 0); }
 }
 
 /* Album Detail Popout Modal */

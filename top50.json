@@ -184,7 +184,7 @@
   {
     "rank": 27,
     "name": "Submarine",
-    "artist": "The Mar\u00edas",
+    "artist": "The Marías",
     "playcount": 112426163,
     "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/ff18c3c08f0e1c85d62eeee24d1154e9.png"
   },
@@ -324,7 +324,7 @@
   {
     "rank": 47,
     "name": "I AM...SASHA FIERCE",
-    "artist": "Beyonc\u00e9",
+    "artist": "Beyoncé",
     "playcount": 38384137,
     "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/3e80ed2c42b53bd8a3d69d91ed215715.png"
   },
@@ -345,8 +345,848 @@
   {
     "rank": 50,
     "name": "SUPERSCAR",
-    "artist": "AD\u00c9LA",
+    "artist": "ADÉLA",
     "playcount": 4882465,
     "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/65707b93d1cd1ce11e995e8c911f2adc.png"
+  },
+  {
+    "rank": 51,
+    "name": "reputation",
+    "artist": "Taylor Swift",
+    "playcount": 278967227,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/dddb96a470fecc69d281f45c81a44d2a.png"
+  },
+  {
+    "rank": 52,
+    "name": "SOS",
+    "artist": "SZA",
+    "playcount": 265391975,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/b2cfb5bdf137f4d6293565205965750f.png"
+  },
+  {
+    "rank": 53,
+    "name": "HIT ME HARD AND SOFT",
+    "artist": "Billie Eilish",
+    "playcount": 252716546,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/90b54d4d4658b8215a5fcd3cf00072d7.png"
+  },
+  {
+    "rank": 54,
+    "name": "IGOR",
+    "artist": "Tyler, The Creator",
+    "playcount": 237235582,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/e150fa362c89b8f1d92d883ae828b7ef.png"
+  },
+  {
+    "rank": 55,
+    "name": "Whole Lotta Red",
+    "artist": "Playboi Carti",
+    "playcount": 234575121,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/0db2bb3f8dcebb4279db97dc7608d090.png"
+  },
+  {
+    "rank": 56,
+    "name": "channel ORANGE",
+    "artist": "Frank Ocean",
+    "playcount": 217848863,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/553678d27570452839aec0fd0cdadd63.png"
+  },
+  {
+    "rank": 57,
+    "name": "GUTS",
+    "artist": "Olivia Rodrigo",
+    "playcount": 191477784,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/e39eb31f874f4a5c4afa836845141437.png"
+  },
+  {
+    "rank": 58,
+    "name": "My Beautiful Dark Twisted Fantasy",
+    "artist": "Kanye West",
+    "playcount": 186034168,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/8a071c4b073625018de5f0ac58727511.png"
+  },
+  {
+    "rank": 59,
+    "name": "Ultraviolence (Deluxe)",
+    "artist": "Lana Del Rey",
+    "playcount": 182861097,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/eb300e3afe470b74b4384b169b96dd56.png"
+  },
+  {
+    "rank": 60,
+    "name": "Toxicity",
+    "artist": "System of a Down",
+    "playcount": 170442805,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/faa79372c53139010902e67938ccf78e.png"
+  },
+  {
+    "rank": 61,
+    "name": "Three Cheers for Sweet Revenge",
+    "artist": "My Chemical Romance",
+    "playcount": 166061226,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/09cb27a9f908354fd210a07830951791.png"
+  },
+  {
+    "rank": 62,
+    "name": "Harry's House",
+    "artist": "Harry Styles",
+    "playcount": 162765634,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/1534f4871b5acfffb2d621047a771fa0.png"
+  },
+  {
+    "rank": 63,
+    "name": "thank u, next",
+    "artist": "Ariana Grande",
+    "playcount": 162046056,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/5d67250ce101c8afaaa33b5d9f8926e2.png"
+  },
+  {
+    "rank": 64,
+    "name": "Favourite Worst Nightmare",
+    "artist": "Arctic Monkeys",
+    "playcount": 158627090,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/4debfeb504dc47779f0ff3df43fd9529.png"
+  },
+  {
+    "rank": 65,
+    "name": "Cigarettes After Sex",
+    "artist": "Cigarettes After Sex",
+    "playcount": 154055651,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/5d53d7e6aad2f08c464e301d3bab6e96.png"
+  },
+  {
+    "rank": 66,
+    "name": "After Hours",
+    "artist": "The Weeknd",
+    "playcount": 150426767,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/4583932b753c96d0d2f22fe9774e5ef3.png"
+  },
+  {
+    "rank": 67,
+    "name": "Melodrama",
+    "artist": "Lorde",
+    "playcount": 147796408,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/fdef4c7536c03d0a5a6689e4b1fa9b42.png"
+  },
+  {
+    "rank": 68,
+    "name": "Ctrl",
+    "artist": "SZA",
+    "playcount": 146682473,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/9dcae165f522e0d818f7e75a3b5b6e16.png"
+  },
+  {
+    "rank": 69,
+    "name": "Punisher",
+    "artist": "Phoebe Bridgers",
+    "playcount": 143428706,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/5da7715b90330903da9116d247a59378.png"
+  },
+  {
+    "rank": 70,
+    "name": "Fine Line",
+    "artist": "Harry Styles",
+    "playcount": 138047741,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/7940fbb1df766b4683951aed490a8b5a.png"
+  },
+  {
+    "rank": 71,
+    "name": "Playboi Carti",
+    "artist": "Playboi Carti",
+    "playcount": 132547234,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/9115b9fbc7cf8db99d504319cdf6bd90.png"
+  },
+  {
+    "rank": 72,
+    "name": "brand new eyes",
+    "artist": "Paramore",
+    "playcount": 130834320,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/8935ea2d777c8f2f5f3c7a8f521ea9fb.png"
+  },
+  {
+    "rank": 73,
+    "name": "DeBÍ TiRAR MáS FOToS",
+    "artist": "Bad Bunny",
+    "playcount": 125859772,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/7d0982b56a5e4304eb6207d6688c917a.png"
+  },
+  {
+    "rank": 74,
+    "name": "Un Verano Sin Ti",
+    "artist": "Bad Bunny",
+    "playcount": 124677796,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/fd95bc0e534a5ab8c54c97791864f2d7.png"
+  },
+  {
+    "rank": 75,
+    "name": "Pure Heroine",
+    "artist": "Lorde",
+    "playcount": 122809100,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/1c3f14fba3dececc85d10d7252e68b93.png"
+  },
+  {
+    "rank": 76,
+    "name": "Who Really Cares",
+    "artist": "TV Girl",
+    "playcount": 122710014,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/7f606674cfa1fdc4603695021d3fbc95.png"
+  },
+  {
+    "rank": 77,
+    "name": "Is This It",
+    "artist": "The Strokes",
+    "playcount": 121574344,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/c7a4e1700ae85d9910bbe59887a8c771.png"
+  },
+  {
+    "rank": 78,
+    "name": "A Fever You Can't Sweat Out",
+    "artist": "Panic! at the Disco",
+    "playcount": 114357713,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/249a926fbef4487eb39bbb93d4a0618d.png"
+  },
+  {
+    "rank": 79,
+    "name": "Hard to Imagine the Neighbourhood Ever Changing",
+    "artist": "The Neighbourhood",
+    "playcount": 113517537,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/74e59938d6365ad84c92273028bdf595.png"
+  },
+  {
+    "rank": 80,
+    "name": "Blurryface",
+    "artist": "Twenty One Pilots",
+    "playcount": 108015046,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/6f9906f43b7b516e89f9ebc331dd990a.png"
+  },
+  {
+    "rank": 81,
+    "name": "Future Nostalgia",
+    "artist": "Dua Lipa",
+    "playcount": 107955164,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/7017c94ef74a476838e751b0cee1f014.png"
+  },
+  {
+    "rank": 82,
+    "name": "Collide With the Sky",
+    "artist": "Pierce the Veil",
+    "playcount": 107053317,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/557643a8faaa35768cb6088f576fed30.png"
+  },
+  {
+    "rank": 83,
+    "name": "A Rush of Blood to the Head",
+    "artist": "Coldplay",
+    "playcount": 106594233,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/a61e3c7b85303555ebac49fa460a17c3.png"
+  },
+  {
+    "rank": 84,
+    "name": "Hatful of Hollow",
+    "artist": "The Smiths",
+    "playcount": 103244474,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/c1d87ec19e6f9c837d5f3b31441d1ff8.png"
+  },
+  {
+    "rank": 85,
+    "name": "BALLADS 1",
+    "artist": "Joji",
+    "playcount": 102755057,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/e6a34793a424eec94bde00c621caa70f.png"
+  },
+  {
+    "rank": 86,
+    "name": "Minutes to Midnight",
+    "artist": "Linkin Park",
+    "playcount": 101047134,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/185a38ca7368d2c9ad9cb9ea95ae05f4.png"
+  },
+  {
+    "rank": 87,
+    "name": "Swimming",
+    "artist": "Mac Miller",
+    "playcount": 96852317,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/9f0e333c941c1a0147fc5d347d343e6d.png"
+  },
+  {
+    "rank": 88,
+    "name": "Pablo Honey",
+    "artist": "Radiohead",
+    "playcount": 96741231,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/03327d30bc3de35afb8cab929a3055f3.png"
+  },
+  {
+    "rank": 89,
+    "name": "This Old Dog",
+    "artist": "Mac DeMarco",
+    "playcount": 96478356,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/b6cc7efcf8c694136846f0b3af0b7984.png"
+  },
+  {
+    "rank": 90,
+    "name": "The Land Is Inhospitable and So Are We",
+    "artist": "Mitski",
+    "playcount": 93742787,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/788dfbc94a424d3b344aa97e68f68eed.png"
+  },
+  {
+    "rank": 91,
+    "name": "Charm",
+    "artist": "Clairo",
+    "playcount": 93380835,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/6e8d5d5ca3c27594162651accd47cb7e.png"
+  },
+  {
+    "rank": 92,
+    "name": "Hot Pink",
+    "artist": "Doja Cat",
+    "playcount": 91084862,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/be2aca67c96a044ec6e2726d7de50d94.png"
+  },
+  {
+    "rank": 93,
+    "name": "Nectar",
+    "artist": "Joji",
+    "playcount": 90884309,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/b74dc22e72de2839db17e7e04b41e8f8.png"
+  },
+  {
+    "rank": 94,
+    "name": "Room on Fire",
+    "artist": "The Strokes",
+    "playcount": 90768384,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/a9c961c8da0d4427b7d7a4018738f5df.png"
+  },
+  {
+    "rank": 95,
+    "name": "Brat and it’s completely different but also still brat",
+    "artist": "Charli xcx",
+    "playcount": 90461281,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/899f1ced9adb26175e0c93a9254820cc.png"
+  },
+  {
+    "rank": 96,
+    "name": "Weezer",
+    "artist": "Weezer",
+    "playcount": 89729684,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/d7e25d382e697f78e7294ddb749ac38d.png"
+  },
+  {
+    "rank": 97,
+    "name": "White Pony",
+    "artist": "Deftones",
+    "playcount": 88702491,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/afac69dd8ee2b6f734d647fdbadcde55.png"
+  },
+  {
+    "rank": 98,
+    "name": "Freudian",
+    "artist": "Daniel Caesar",
+    "playcount": 87981916,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/fcc1f99ede88299b3674522c6b2923eb.png"
+  },
+  {
+    "rank": 99,
+    "name": "Isolation",
+    "artist": "Kali Uchis",
+    "playcount": 87801162,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/bf56b9acc7cdf77704bd0a9dbb602c65.png"
+  },
+  {
+    "rank": 100,
+    "name": "The Eminem Show",
+    "artist": "Eminem",
+    "playcount": 85118174,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/74768435b4f70689863aa76f888d62a3.png"
+  },
+  {
+    "rank": 101,
+    "name": "American Idiot",
+    "artist": "Green Day",
+    "playcount": 84886971,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/5bcb675866706c229ad9f77188b8ac44.png"
+  },
+  {
+    "rank": 102,
+    "name": "Hypnotize",
+    "artist": "System of a Down",
+    "playcount": 83782259,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/5ae5c1ba55298b5831c42d93fba06f2d.png"
+  },
+  {
+    "rank": 103,
+    "name": "Scorpion",
+    "artist": "Drake",
+    "playcount": 82679624,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/ca4c69928d1fbdfff2f29c57541125cc.png"
+  },
+  {
+    "rank": 104,
+    "name": "Camp",
+    "artist": "Childish Gambino",
+    "playcount": 81093487,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/d2c51831aa2b59b93c7e56b29efbbcf6.png"
+  },
+  {
+    "rank": 105,
+    "name": "AT.LONG.LAST.A$AP",
+    "artist": "A$AP Rocky",
+    "playcount": 80412121,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/5184e16c4f2964ebb3e4b68b3ccb849e.png"
+  },
+  {
+    "rank": 106,
+    "name": "Addison",
+    "artist": "Addison Rae",
+    "playcount": 78668199,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/ad9e0bcc76824a8327dd4ed57d20dd5b.png"
+  },
+  {
+    "rank": 107,
+    "name": "WE DON'T TRUST YOU",
+    "artist": "Future",
+    "playcount": 78386550,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/ed0b0acbc5af9cabb31acbf3ba9e79bb.png"
+  },
+  {
+    "rank": 108,
+    "name": "LONG.LIVE.A$AP (Deluxe Version)",
+    "artist": "A$AP Rocky",
+    "playcount": 77455297,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/c0203b6fcecc7514ce88b34a99554694.png"
+  },
+  {
+    "rank": 109,
+    "name": "Gemini Rights",
+    "artist": "Steve Lacy",
+    "playcount": 77221782,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/12dcf1122cccf14bd8d943480d04cd58.png"
+  },
+  {
+    "rank": 110,
+    "name": "Cry",
+    "artist": "Cigarettes After Sex",
+    "playcount": 76680598,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/7f3eebc25ed0d0560adeb5c4d40007f9.png"
+  },
+  {
+    "rank": 111,
+    "name": "Stranger in the Alps",
+    "artist": "Phoebe Bridgers",
+    "playcount": 76456561,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/531bdb172f66ee3500e344936f1f22bd.png"
+  },
+  {
+    "rank": 112,
+    "name": "The Fame Monster (Deluxe Edition)",
+    "artist": "Lady Gaga",
+    "playcount": 75235367,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/0dc64dbb17438473725ef05fef4e6741.png"
+  },
+  {
+    "rank": 113,
+    "name": "Bewitched",
+    "artist": "Laufey",
+    "playcount": 75042825,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/94994638b4305d100e95026e361c1722.png"
+  },
+  {
+    "rank": 114,
+    "name": "One of the Boys",
+    "artist": "Katy Perry",
+    "playcount": 74896465,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/4ef26b71f7e3c59479f675a85e17cecf.png"
+  },
+  {
+    "rank": 115,
+    "name": "The Slow Rush",
+    "artist": "Tame Impala",
+    "playcount": 74889480,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/832ade6a35ec2a224ea9a5be326b5de4.png"
+  },
+  {
+    "rank": 116,
+    "name": "Rumours (Super Deluxe)",
+    "artist": "Fleetwood Mac",
+    "playcount": 74574291,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/e64ceb720a09f1f6072b84cdae41d751.png"
+  },
+  {
+    "rank": 117,
+    "name": "Dookie",
+    "artist": "Green Day",
+    "playcount": 73370267,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/2248e72411992639ffa8ab94ba97a631.png"
+  },
+  {
+    "rank": 118,
+    "name": "Blackout",
+    "artist": "Britney Spears",
+    "playcount": 73353998,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/b9a14a64aed91932f0f45708d6b20a74.png"
+  },
+  {
+    "rank": 119,
+    "name": "Luv Is Rage 2",
+    "artist": "Lil Uzi Vert",
+    "playcount": 71687523,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/28b5dfed6d5b4023e8f14c2303960cb5.png"
+  },
+  {
+    "rank": 120,
+    "name": "good kid, m.A.A.d city",
+    "artist": "Kendrick Lamar",
+    "playcount": 71465160,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/48628c6af67db437b0b9ff156b2c1085.png"
+  },
+  {
+    "rank": 121,
+    "name": "Unorthodox Jukebox",
+    "artist": "Bruno Mars",
+    "playcount": 68825419,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/c7cf0cd2fcd6efb0a33e063a8d82ff0e.png"
+  },
+  {
+    "rank": 122,
+    "name": "Gorillaz",
+    "artist": "Gorillaz",
+    "playcount": 67807822,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/86fc45f14a789e9fee32a99ea9036d3d.png"
+  },
+  {
+    "rank": 123,
+    "name": "Loud",
+    "artist": "Rihanna",
+    "playcount": 65002563,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/cee5b95414736f9297b94e11d3b9976b.png"
+  },
+  {
+    "rank": 124,
+    "name": "Mellon Collie and the Infinite Sadness (Deluxe Edition)",
+    "artist": "The Smashing Pumpkins",
+    "playcount": 62174246,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/2a453e940a8945b4c5b2766f76ece94a.png"
+  },
+  {
+    "rank": 125,
+    "name": "This Is How Tomorrow Moves",
+    "artist": "beabadoobee",
+    "playcount": 62110778,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/794fdafa7b5fe907c6f9abe41060af6d.png"
+  },
+  {
+    "rank": 126,
+    "name": "Nevermind",
+    "artist": "Nirvana",
+    "playcount": 61708414,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/e8693de0a153e609b3eaebb42d62e8be.png"
+  },
+  {
+    "rank": 127,
+    "name": "Everything I Know About Love",
+    "artist": "Laufey",
+    "playcount": 61382672,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/bc4202b19c488be8ca759874faa8548a.png"
+  },
+  {
+    "rank": 128,
+    "name": "Good Luck, Babe!",
+    "artist": "Chappell Roan",
+    "playcount": 61175794,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/86fa0d410ba70ada74d22cf4b690b05b.png"
+  },
+  {
+    "rank": 129,
+    "name": "UNFORGIVEN",
+    "artist": "LE SSERAFIM",
+    "playcount": 59718741,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/97539440d0f639d7b970cc26b6df75c5.png"
+  },
+  {
+    "rank": 130,
+    "name": "The Beatles (Remastered)",
+    "artist": "The Beatles",
+    "playcount": 59644409,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/78bf9324efbc7583e6cae6f707568e59.png"
+  },
+  {
+    "rank": 131,
+    "name": "Heaven or Las Vegas",
+    "artist": "Cocteau Twins",
+    "playcount": 58870611,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/350066babb80493fc9fa9b63dd40086d.png"
+  },
+  {
+    "rank": 132,
+    "name": "NEVER ENOUGH",
+    "artist": "Daniel Caesar",
+    "playcount": 58517592,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/19102a409a0fbcb571788e0c4b9067b1.png"
+  },
+  {
+    "rank": 133,
+    "name": "Rumours",
+    "artist": "Fleetwood Mac",
+    "playcount": 58161590,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/349d64820e124b77cb5275ab03042693.png"
+  },
+  {
+    "rank": 134,
+    "name": "Recovery",
+    "artist": "Eminem",
+    "playcount": 57073652,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/ee16dc01c93643b288b60e9806c1e68b.png"
+  },
+  {
+    "rank": 135,
+    "name": "Heaven or Hell",
+    "artist": "Don Toliver",
+    "playcount": 50976641,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/778e527ba305e1d65d002df7ac9b7fa5.png"
+  },
+  {
+    "rank": 136,
+    "name": "The Divine Feminine",
+    "artist": "Mac Miller",
+    "playcount": 49912271,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/b8f1d45f318d32329329727444c51239.png"
+  },
+  {
+    "rank": 137,
+    "name": "Selfish Machines",
+    "artist": "Pierce the Veil",
+    "playcount": 48471923,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/2d23f6186a52429cc254acd176e75f4f.png"
+  },
+  {
+    "rank": 138,
+    "name": "Sin Miedo (del Amor y Otros Demonios) ∞",
+    "artist": "Kali Uchis",
+    "playcount": 48304795,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/a2aa0354e06545fb4736694ee8639b89.png"
+  },
+  {
+    "rank": 139,
+    "name": "CINEMA",
+    "artist": "The Marías",
+    "playcount": 47464653,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/669e4fdc792fffd53f969820325843ac.png"
+  },
+  {
+    "rank": 140,
+    "name": "Death of a Bachelor",
+    "artist": "Panic! at the Disco",
+    "playcount": 46197101,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/257fe11067041f5b10e758f64afb601e.png"
+  },
+  {
+    "rank": 141,
+    "name": "Luv Is Rage 2 (Deluxe)",
+    "artist": "Lil Uzi Vert",
+    "playcount": 45482536,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/dd7df4864af8cf12a2f3b736c47c4315.png"
+  },
+  {
+    "rank": 142,
+    "name": "Songs About Jane",
+    "artist": "Maroon 5",
+    "playcount": 43444068,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/bbf019744c23450f80c16a492c6917e0.png"
+  },
+  {
+    "rank": 143,
+    "name": "Dangerously in Love",
+    "artist": "Beyoncé",
+    "playcount": 40689107,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/bb77c77fc1a103842c22022d7ed68f7f.png"
+  },
+  {
+    "rank": 144,
+    "name": "Off the Wall",
+    "artist": "Michael Jackson",
+    "playcount": 40041561,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/8fe6f2a0832392b384472f53a5d8cfd6.png"
+  },
+  {
+    "rank": 145,
+    "name": "Pinkerton",
+    "artist": "Weezer",
+    "playcount": 40030588,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/739a9329f64575d77c81ce5fe15489cf.png"
+  },
+  {
+    "rank": 146,
+    "name": "Armageddon - The 1st Album",
+    "artist": "aespa",
+    "playcount": 39555890,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/adc40f019519243644d328426da12e73.png"
+  },
+  {
+    "rank": 147,
+    "name": "FEARLESS",
+    "artist": "LE SSERAFIM",
+    "playcount": 39070240,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/d930ba65bb061c4c8a7849e3704216cd.png"
+  },
+  {
+    "rank": 148,
+    "name": "Dua Lipa (Deluxe)",
+    "artist": "Dua Lipa",
+    "playcount": 38532442,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/7c964930c1ba17fe12e919e047532491.png"
+  },
+  {
+    "rank": 149,
+    "name": "Fancy Some More?",
+    "artist": "PinkPantheress",
+    "playcount": 37044014,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/3e0f3dc821a8445892b0b65cb26b0194.png"
+  },
+  {
+    "rank": 150,
+    "name": "Espresso",
+    "artist": "Sabrina Carpenter",
+    "playcount": 36774144,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/31af483995fa0388205995fc95f76318.png"
+  },
+  {
+    "rank": 151,
+    "name": "Bangerz (Deluxe Version)",
+    "artist": "Miley Cyrus",
+    "playcount": 33800202,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/f06677f503dd5d29e8f2f6664435504f.png"
+  },
+  {
+    "rank": 152,
+    "name": "Siamese Dream (Deluxe Edition)",
+    "artist": "The Smashing Pumpkins",
+    "playcount": 33350796,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/23f92dcd4d6c0762422d0587a1b6a656.png"
+  },
+  {
+    "rank": 153,
+    "name": "Love Sick (Deluxe)",
+    "artist": "Don Toliver",
+    "playcount": 32559556,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/043211479ce1378b14ba16d86be0d2bd.png"
+  },
+  {
+    "rank": 154,
+    "name": "Greatest Hits",
+    "artist": "The Cure",
+    "playcount": 32556385,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/bdbc60c4bab8cf280166d31716bc0fc8.png"
+  },
+  {
+    "rank": 155,
+    "name": "V",
+    "artist": "Maroon 5",
+    "playcount": 30360642,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/1fd6e49508d7b077c8344f45853ded46.png"
+  },
+  {
+    "rank": 156,
+    "name": "Believe",
+    "artist": "Justin Bieber",
+    "playcount": 27849513,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/ca337a40bbb78937bf330454761ee592.png"
+  },
+  {
+    "rank": 157,
+    "name": "Drama - The 4th Mini Album",
+    "artist": "aespa",
+    "playcount": 26534346,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/79507db3be8709792cd6689f9e69e530.png"
+  },
+  {
+    "rank": 158,
+    "name": "FUTURE",
+    "artist": "Future",
+    "playcount": 26308502,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/221d53768d47338692fa9fc60b6a6b26.png"
+  },
+  {
+    "rank": 159,
+    "name": "Celebration (Double Disc Version)",
+    "artist": "Madonna",
+    "playcount": 24858289,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/5779fa945644a539ad2beeaede333d92.png"
+  },
+  {
+    "rank": 160,
+    "name": "Malcolm Todd",
+    "artist": "Malcolm Todd",
+    "playcount": 19680132,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/4712eef00d71c3c3d9de2445a9e1ae7b.png"
+  },
+  {
+    "rank": 161,
+    "name": "Gabriela",
+    "artist": "KATSEYE",
+    "playcount": 17543808,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/0f95953437c8d4d79e09183f1456815e.png"
+  },
+  {
+    "rank": 162,
+    "name": "The Moon And The Melodies",
+    "artist": "Cocteau Twins",
+    "playcount": 17468027,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/8750f9df0453ffc171ea067f78407a66.png"
+  },
+  {
+    "rank": 163,
+    "name": "Touch",
+    "artist": "KATSEYE",
+    "playcount": 15801229,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/0c81d4f29851f449dfaed1057c3ca2ce.png"
+  },
+  {
+    "rank": 164,
+    "name": "Diet Pepsi",
+    "artist": "Addison Rae",
+    "playcount": 15378418,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/409c8ccccfa05601c8645b1f9cd3e9c4.png"
+  },
+  {
+    "rank": 165,
+    "name": "Heathens",
+    "artist": "Twenty One Pilots",
+    "playcount": 11684098,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/f654427f55499896095d4af3d3978b1a.png"
+  },
+  {
+    "rank": 166,
+    "name": "The Time of Our Lives",
+    "artist": "Miley Cyrus",
+    "playcount": 11041104,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/873f9169dee8b63581cfde959d128c32.png"
+  },
+  {
+    "rank": 167,
+    "name": "Slayyyter",
+    "artist": "Slayyyter",
+    "playcount": 10286141,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/13ac0f00992b86bd3c6cda5c4dd38ea9.png"
+  },
+  {
+    "rank": 168,
+    "name": "The Provocateur",
+    "artist": "ADÉLA",
+    "playcount": 10128072,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/0f3f88c1f6d0451ec6d0fc74200ca678.png"
+  },
+  {
+    "rank": 169,
+    "name": "Days Before Rodeo",
+    "artist": "Travis Scott",
+    "playcount": 2712344,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/910fce6d2f6bc7ba78f0752ec99e51c0.png"
+  },
+  {
+    "rank": 170,
+    "name": "Rodeo (Deluxe)",
+    "artist": "Travis Scott",
+    "playcount": 1250055,
+    "image": "https://lastfm-img.freetls.fastly.net/i/u/300x300/10b345c1b8b59d26e3c6083438169b2a.png"
   }
 ]
