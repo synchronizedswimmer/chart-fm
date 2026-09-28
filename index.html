@@ -94,10 +94,16 @@ ul.task-list li input[type="checkbox"] {
 
 <nav class="floating-nav">
 <button id="nav-home" class="floating-nav-item active" type="button">
-home
+Home
 </button>
 <button id="nav-scrobbles" class="floating-nav-item" type="button">
-view my scrobbles
+View My Scrobbles
+</button>
+<button id="nav-explore" class="floating-nav-item" type="button">
+Explore
+</button>
+<button id="nav-about" class="floating-nav-item" type="button">
+About
 </button>
 </nav>
 <div id="home-tab-view" class="tab-view">
@@ -144,15 +150,26 @@ view my scrobbles
     </p>
   </div>
 </section>
+
+<section class="genre-network-section">
+  <div class="genre-network-header">
+    <div class="simulation-title">Genre Folksonomy Network</div>
+    <div class="simulation-subtitle">interactive tag connections · drag nodes to explore · zoom to reveal subgenres</div>
+  </div>
+  <div id="genre-network-container" class="genre-network-container"></div>
+</section>
 </div>
 <div id="scrobbles-tab-view" class="tab-view" style="display: none; width: 100%;">
   <div id="scrobbles-search-container" style="min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 20px 16px;">
     <div style="width: 100%; max-width: 440px; margin: auto; text-align: center;">
+      <p style="font-size: 0.95rem; color: #a1a1aa; line-height: 1.5; margin-bottom: 1.5rem; text-align: left;">
+        If you have a Last.fm account, you can enter it below to see your top albums with an interactive editable map.
+      </p>
       <form id="lastfm-form" style="margin-bottom: 1.5rem; text-align: left;">
         <label for="lastfm-username" style="display: block; font-size: 0.88rem; margin-bottom: 0.5rem; color: #d4d4d8;">Last.fm username</label>
         <div style="display: flex; gap: 0.5rem; align-items: center;">
           <input id="lastfm-username" class="form-control" type="text" placeholder="e.g. rj" required="" style="flex: 1; height: 38px; background: #18181b; border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; border-radius: 6px; padding: 0 12px; font-size: 0.9rem;">
-          <button class="btn scrobble-btn" type="submit" style="height: 38px; padding: 0 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; line-height: 1; white-space: nowrap;">Look up</button>
+          <button id="lastfm-submit-btn" class="btn scrobble-btn" type="button" style="height: 38px; padding: 0 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; line-height: 1; white-space: nowrap;">Look up</button>
         </div>
       </form>
 
@@ -162,6 +179,9 @@ view my scrobbles
 
   <div id="scrobbles-chart-container" style="display: none; width: 100%;"></div>
 </div>
+
+<div id="explore-tab-view" class="tab-view" style="display: none; width: 100%;"></div>
+<div id="about-tab-view" class="tab-view" style="display: none; width: 100%;"></div>
 
 <!-- Floating bottom settings tab (gear icon) -->
 <div id="settings-dock" class="settings-dock" style="display: none;">
@@ -249,38 +269,51 @@ view my scrobbles
 </div>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="home-chart.js"></script>
+<script src="genre-network.js"></script>
 <script>
   let currentTab = "home";
+  let isScrobblesSimulationLoaded = false;
 
   function showTab(tabName) {
     currentTab = tabName;
-    const homeView = document.getElementById("home-tab-view");
-    const scrobblesView = document.getElementById("scrobbles-tab-view");
-    const navHome = document.getElementById("nav-home");
-    const navScrobbles = document.getElementById("nav-scrobbles");
+    const views = {
+      home: document.getElementById("home-tab-view"),
+      scrobbles: document.getElementById("scrobbles-tab-view"),
+      explore: document.getElementById("explore-tab-view"),
+      about: document.getElementById("about-tab-view")
+    };
+    const navButtons = {
+      home: document.getElementById("nav-home"),
+      scrobbles: document.getElementById("nav-scrobbles"),
+      explore: document.getElementById("nav-explore"),
+      about: document.getElementById("nav-about")
+    };
     const settingsUserGroup = document.getElementById("settings-user-group");
     const settingsDock = document.getElementById("settings-dock");
     const settingsPanel = document.getElementById("settings-panel");
     const settingsBackdrop = document.getElementById("settings-backdrop");
 
+    Object.keys(views).forEach((key) => {
+      if (views[key]) {
+        views[key].style.display = key === tabName ? "block" : "none";
+      }
+      if (navButtons[key]) {
+        navButtons[key].classList.toggle("active", key === tabName);
+      }
+    });
+
     if (tabName === "scrobbles") {
-      if (homeView) homeView.style.display = "none";
-      if (scrobblesView) scrobblesView.style.display = "block";
-      navHome?.classList.remove("active");
-      navScrobbles?.classList.add("active");
-      if (settingsUserGroup) settingsUserGroup.style.display = "block";
-      if (settingsDock) settingsDock.style.display = "flex";
+      if (settingsUserGroup) settingsUserGroup.style.display = isScrobblesSimulationLoaded ? "block" : "none";
+      if (settingsDock) settingsDock.style.display = isScrobblesSimulationLoaded ? "flex" : "none";
       window.refreshScrobblesChartDimensions?.();
     } else {
-      if (scrobblesView) scrobblesView.style.display = "none";
-      if (homeView) homeView.style.display = "block";
-      navScrobbles?.classList.remove("active");
-      navHome?.classList.add("active");
       if (settingsUserGroup) settingsUserGroup.style.display = "none";
       if (settingsDock) settingsDock.style.display = "none";
       settingsPanel?.classList.remove("open");
       settingsBackdrop?.classList.remove("open");
-      window.refreshHomeChartDimensions?.();
+      if (tabName === "home") {
+        window.refreshHomeChartDimensions?.();
+      }
     }
 
     if (typeof window.syncChartSettingsControls === "function") {
@@ -288,12 +321,14 @@ view my scrobbles
     }
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  function initChartApp() {
     document.body.classList.add("has-chart");
     window.initHomeTopAlbums();
 
     const navHome = document.getElementById("nav-home");
     const navScrobbles = document.getElementById("nav-scrobbles");
+    const navExplore = document.getElementById("nav-explore");
+    const navAbout = document.getElementById("nav-about");
 
     navHome?.addEventListener("click", () => {
       window.location.hash = "home";
@@ -303,13 +338,22 @@ view my scrobbles
       window.location.hash = "scrobbles";
     });
 
-    window.addEventListener("hashchange", () => {
-      const isScrobbles = window.location.hash === "#scrobbles";
-      showTab(isScrobbles ? "scrobbles" : "home");
+    navExplore?.addEventListener("click", () => {
+      window.location.hash = "explore";
     });
 
-    if (window.location.hash === "#scrobbles") {
-      showTab("scrobbles");
+    navAbout?.addEventListener("click", () => {
+      window.location.hash = "about";
+    });
+
+    window.addEventListener("hashchange", () => {
+      const hash = window.location.hash.replace(/^#/, "");
+      showTab(["home", "scrobbles", "explore", "about"].includes(hash) ? hash : "home");
+    });
+
+    const initialHash = window.location.hash.replace(/^#/, "");
+    if (["scrobbles", "explore", "about"].includes(initialHash)) {
+      showTab(initialHash);
     }
 
     // --- Settings Panel Controls ---
@@ -359,15 +403,15 @@ view my scrobbles
     } catch (e) {}
     window.__chartCounts = Object.assign({}, currentCounts);
 
-    // Default and current physics state
+    // Default and current physics state (isolated exclusively to the view my scrobbles page)
     const defaultPhysics = { attraction: -15, minDistance: 2, gravity: 0.07, sizeScale: 1.0, gravityDynamics: 1.0 };
-    let currentPhysics = Object.assign({}, defaultPhysics);
+    let scrobblesPhysics = Object.assign({}, defaultPhysics);
     try {
-      const saved = JSON.parse(localStorage.getItem("chartfm_physics") || "null");
-      if (saved) currentPhysics = Object.assign({}, defaultPhysics, saved);
+      const saved = JSON.parse(localStorage.getItem("chartfm_scrobbles_physics") || "null");
+      if (saved) scrobblesPhysics = Object.assign({}, defaultPhysics, saved);
     } catch (e) {}
 
-    window.__chartPhysics = Object.assign({}, currentPhysics);
+    window.__scrobblesPhysics = Object.assign({}, scrobblesPhysics);
 
     function syncControls() {
       if (countSlider && countVal) {
@@ -376,27 +420,27 @@ view my scrobbles
         countVal.textContent = cnt.toString();
       }
       if (sizeSlider && sizeVal) {
-        const sz = currentPhysics.sizeScale !== undefined ? currentPhysics.sizeScale : 1.0;
+        const sz = scrobblesPhysics.sizeScale !== undefined ? scrobblesPhysics.sizeScale : 1.0;
         sizeSlider.value = sz.toString();
         sizeVal.textContent = `${Number(sz).toFixed(2)}x`;
       }
       if (gravdynSlider && gravdynVal) {
-        const gd = currentPhysics.gravityDynamics !== undefined ? currentPhysics.gravityDynamics : 1.0;
+        const gd = scrobblesPhysics.gravityDynamics !== undefined ? scrobblesPhysics.gravityDynamics : 1.0;
         gravdynSlider.value = gd.toString();
         gravdynVal.textContent = `${Number(gd).toFixed(2)}x`;
       }
       if (gravitySlider && gravityVal) {
-        const gv = currentPhysics.gravity !== undefined ? currentPhysics.gravity : 0.07;
+        const gv = scrobblesPhysics.gravity !== undefined ? scrobblesPhysics.gravity : 0.07;
         gravitySlider.value = gv.toString();
         gravityVal.textContent = Number(gv).toFixed(2);
       }
       if (attractionSlider && attractionVal) {
-        const at = currentPhysics.attraction !== undefined ? currentPhysics.attraction : -15;
+        const at = scrobblesPhysics.attraction !== undefined ? scrobblesPhysics.attraction : -15;
         attractionSlider.value = at.toString();
         attractionVal.textContent = at.toString();
       }
       if (mindistSlider && mindistVal) {
-        const md = currentPhysics.minDistance !== undefined ? currentPhysics.minDistance : 2;
+        const md = scrobblesPhysics.minDistance !== undefined ? scrobblesPhysics.minDistance : 2;
         mindistSlider.value = md.toString();
         mindistVal.textContent = `${md}px`;
       }
@@ -406,11 +450,11 @@ view my scrobbles
     syncControls();
 
     function emitPhysicsChange() {
-      window.__chartPhysics = Object.assign({}, currentPhysics);
+      window.__scrobblesPhysics = Object.assign({}, scrobblesPhysics);
       try {
-        localStorage.setItem("chartfm_physics", JSON.stringify(currentPhysics));
+        localStorage.setItem("chartfm_scrobbles_physics", JSON.stringify(scrobblesPhysics));
       } catch (e) {}
-      window.dispatchEvent(new CustomEvent("chartfm-physics-change", { detail: currentPhysics }));
+      window.dispatchEvent(new CustomEvent("chartfm-physics-change", { detail: { tab: "scrobbles", physics: scrobblesPhysics } }));
     }
 
     countSlider?.addEventListener("input", (e) => {
@@ -425,91 +469,138 @@ view my scrobbles
     });
 
     sizeSlider?.addEventListener("input", (e) => {
-      const val = parseFloat(e.target.value) || 0;
-      currentPhysics.sizeScale = val;
-      if (sizeVal) sizeVal.textContent = `${val.toFixed(2)}x`;
+      const val = parseFloat(e.target.value);
+      scrobblesPhysics.sizeScale = isNaN(val) ? 1.0 : val;
+      if (sizeVal) sizeVal.textContent = `${scrobblesPhysics.sizeScale.toFixed(2)}x`;
       emitPhysicsChange();
     });
 
     gravdynSlider?.addEventListener("input", (e) => {
       const val = parseFloat(e.target.value) || 0;
-      currentPhysics.gravityDynamics = val;
+      scrobblesPhysics.gravityDynamics = val;
       if (gravdynVal) gravdynVal.textContent = `${val.toFixed(2)}x`;
       emitPhysicsChange();
     });
 
     gravitySlider?.addEventListener("input", (e) => {
       const val = parseFloat(e.target.value) || 0.07;
-      currentPhysics.gravity = val;
+      scrobblesPhysics.gravity = val;
       if (gravityVal) gravityVal.textContent = val.toFixed(2);
       emitPhysicsChange();
     });
 
     attractionSlider?.addEventListener("input", (e) => {
       const val = parseInt(e.target.value, 10);
-      currentPhysics.attraction = isNaN(val) ? -15 : val;
-      if (attractionVal) attractionVal.textContent = currentPhysics.attraction.toString();
+      scrobblesPhysics.attraction = isNaN(val) ? -15 : val;
+      if (attractionVal) attractionVal.textContent = scrobblesPhysics.attraction.toString();
       emitPhysicsChange();
     });
 
     mindistSlider?.addEventListener("input", (e) => {
       const val = parseInt(e.target.value, 10);
-      currentPhysics.minDistance = isNaN(val) ? 2 : val;
-      if (mindistVal) mindistVal.textContent = `${currentPhysics.minDistance}px`;
+      scrobblesPhysics.minDistance = isNaN(val) ? 2 : val;
+      if (mindistVal) mindistVal.textContent = `${scrobblesPhysics.minDistance}px`;
       emitPhysicsChange();
     });
 
     resetBtn?.addEventListener("click", () => {
-      currentPhysics = Object.assign({}, defaultPhysics);
-      currentCounts = Object.assign({}, defaultCounts);
+      scrobblesPhysics = Object.assign({}, defaultPhysics);
+      currentCounts.scrobbles = defaultCounts.scrobbles;
       window.__chartCounts = Object.assign({}, currentCounts);
+      window.__scrobblesPhysics = Object.assign({}, scrobblesPhysics);
       try {
-        localStorage.setItem("chartfm_physics", JSON.stringify(currentPhysics));
+        localStorage.setItem("chartfm_scrobbles_physics", JSON.stringify(scrobblesPhysics));
         localStorage.setItem("chartfm_counts", JSON.stringify(currentCounts));
       } catch (e) {}
       syncControls();
       emitPhysicsChange();
-      window.dispatchEvent(new CustomEvent("chartfm-count-change", { detail: { tab: currentTab, count: currentCounts[currentTab] } }));
+      window.dispatchEvent(new CustomEvent("chartfm-count-change", { detail: { tab: "scrobbles", count: currentCounts.scrobbles } }));
     });
 
     // --- User Scrobbles Lookup ---
     const lastfmForm = document.getElementById("lastfm-form");
+    const lastfmSubmitBtn = document.getElementById("lastfm-submit-btn");
     const lastfmStatus = document.getElementById("lastfm-status");
+    const lastfmInput = document.getElementById("lastfm-username");
     const settingsUserForm = document.getElementById("settings-user-form");
     const settingsUserInput = document.getElementById("settings-user-input");
     const settingsUserStatus = document.getElementById("settings-user-status");
     const searchContainer = document.getElementById("scrobbles-search-container");
     const chartContainer = document.getElementById("scrobbles-chart-container");
+    const settingsDock = document.getElementById("settings-dock");
+    const settingsUserGroup = document.getElementById("settings-user-group");
 
     async function loadUserScrobbles(username) {
       if (!username) return;
+      if (settingsDock) settingsDock.style.display = "none";
       if (settingsUserStatus) settingsUserStatus.textContent = `loading ${username}...`;
-      if (lastfmStatus) lastfmStatus.textContent = `loading top albums for ${username}...`;
 
       try {
         if (searchContainer) searchContainer.style.display = "none";
         if (chartContainer) {
           chartContainer.style.display = "block";
-          chartContainer.innerHTML = "";
+          chartContainer.innerHTML = `
+            <div style="position: relative; width: 100%; height: 100vh; min-height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+              <div class="chart-loading-indicator" style="color: #a1a1aa; font-style: italic; font-size: 0.9rem; letter-spacing: 0.5px; pointer-events: none; user-select: none;">
+                fetching ${username}'s scrobbles<span class="loading-dot-1">.</span><span class="loading-dot-2">.</span><span class="loading-dot-3">.</span>
+              </div>
+            </div>
+          `;
         }
         await window.initUserTopAlbums(username, chartContainer);
+        isScrobblesSimulationLoaded = true;
+        if (settingsDock && currentTab === "scrobbles") {
+          settingsDock.style.display = "flex";
+        }
+        if (settingsUserGroup) settingsUserGroup.style.display = "block";
+        if (settingsUserInput) settingsUserInput.value = username;
         if (settingsUserStatus) settingsUserStatus.textContent = "";
+        if (lastfmStatus) lastfmStatus.textContent = "";
         closeSettings();
       } catch (error) {
-        if (chartContainer) chartContainer.style.display = "none";
-        if (searchContainer) searchContainer.style.display = "flex";
-        if (lastfmStatus) lastfmStatus.textContent = `Could not load albums: ${error.message}`;
+        if (!isScrobblesSimulationLoaded) {
+          if (chartContainer) {
+            chartContainer.style.display = "none";
+            chartContainer.innerHTML = "";
+          }
+          if (searchContainer) searchContainer.style.display = "flex";
+          if (settingsDock) settingsDock.style.display = "none";
+        }
+        if (lastfmStatus) {
+          lastfmStatus.style.color = "#f87171";
+          lastfmStatus.textContent = `Could not load albums: ${error.message}`;
+        }
         if (settingsUserStatus) settingsUserStatus.textContent = `Error: ${error.message}`;
       }
     }
 
+    function handleLookupSubmit() {
+      const username = lastfmInput ? lastfmInput.value.trim() : "";
+      if (!username) {
+        if (lastfmStatus) {
+          lastfmStatus.style.color = "#f87171";
+          lastfmStatus.textContent = "Please enter a Last.fm username.";
+        }
+        return;
+      }
+      if (settingsUserInput) settingsUserInput.value = username;
+      loadUserScrobbles(username);
+    }
+
     lastfmForm?.addEventListener("submit", (e) => {
       e.preventDefault();
-      const input = document.getElementById("lastfm-username");
-      const username = input ? input.value.trim() : "";
-      if (username) {
-        if (settingsUserInput) settingsUserInput.value = username;
-        loadUserScrobbles(username);
+      handleLookupSubmit();
+    });
+
+    lastfmSubmitBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      handleLookupSubmit();
+    });
+
+    lastfmInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleLookupSubmit();
       }
     });
 
@@ -520,7 +611,13 @@ view my scrobbles
         loadUserScrobbles(username);
       }
     });
-  });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initChartApp);
+  } else {
+    initChartApp();
+  }
 </script>
 
 

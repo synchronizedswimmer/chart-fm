@@ -86,7 +86,7 @@ body.has-chart {
 
 .about-lastfm-container {
   width: 100%;
-  padding: 36px 24px 96px;
+  padding: 36px 24px 48px;
   background: #09090b;
   display: flex;
   justify-content: center;
@@ -257,7 +257,6 @@ body.has-chart .search-bar-container {
   text-decoration: none;
   opacity: 0.45;
   cursor: pointer;
-  text-transform: lowercase;
   transition: opacity 0.2s ease, color 0.2s ease;
   line-height: 1;
 }
@@ -285,6 +284,10 @@ body.has-chart .search-bar-container {
 
 .tab-view {
   width: 100%;
+}
+
+#scrobbles-tab-view .simulation-header {
+  display: none;
 }
 
 .simulation-header {
@@ -952,5 +955,152 @@ body.has-chart .search-bar-container {
 .settings-reset-btn:hover {
   color: #d4d4d8;
 }
+
+/* Genre Folksonomy Network (Obsidian node style) */
+.genre-network-section {
+  width: 100%;
+  background: #09090b;
+  padding: 10px 0 96px;
+  position: relative;
+  overflow: hidden;
+}
+
+.genre-network-header {
+  text-align: center;
+  margin-bottom: 24px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.genre-network-header .simulation-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.genre-network-header .simulation-subtitle {
+  font-size: 0.82rem;
+  color: #a1a1aa;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  text-transform: lowercase;
+  margin-top: 4px;
+  line-height: 1.2;
+}
+
+.genre-network-container {
+  position: relative;
+  width: 100%;
+  height: 850px;
+  background: transparent;
+  overflow: hidden;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.genre-network-container svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Dragging state: suppress pointer events on other nodes to stop glitching */
+.genre-network-container svg.is-dragging .genre-network-node {
+  pointer-events: none;
+}
+
+.genre-network-container svg.is-dragging .genre-network-node.is-dragged {
+  pointer-events: auto;
+}
+
+.genre-network-link {
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+.genre-network-node {
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.genre-network-node .node-circle {
+  transition: fill 0.15s ease, stroke 0.15s ease;
+}
+
+/* High-performance CSS-driven hover dimming */
+.network-root.has-hover .genre-network-node:not(.highlighted) {
+  opacity: 0.15;
+}
+
+.network-root.has-hover .genre-network-link:not(.highlighted) {
+  opacity: 0.05;
+}
+
+.network-root.has-hover .genre-network-label:not(.highlighted) {
+  opacity: 0.06 !important;
+}
+
+.genre-network-link.highlighted {
+  stroke: #38bdf8 !important;
+  stroke-width: 1.8px !important;
+  opacity: 0.85 !important;
+}
+
+.genre-network-node.highlighted .node-circle {
+  fill: #ffffff !important;
+  stroke: #38bdf8 !important;
+  stroke-width: 2px !important;
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.6));
+}
+
+/* Layered labels - rendered above nodes with dark halo */
+.genre-network-label {
+  font-family: inherit;
+  user-select: none;
+  pointer-events: none;
+  text-anchor: middle;
+  paint-order: stroke fill;
+  stroke: #09090b;
+  stroke-width: 3.5px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity 0.2s ease, fill 0.15s ease;
+}
+
+.genre-network-label.label-tier-major {
+  font-size: 11.5px;
+  font-weight: 700;
+  fill: #fafafa;
+  letter-spacing: 0.3px;
+}
+
+.genre-network-label.label-tier-mid {
+  font-size: 9px;
+  font-weight: 500;
+  fill: #d4d4d8;
+  letter-spacing: 0.2px;
+}
+
+.genre-network-label.label-tier-small {
+  font-size: 8px;
+  font-weight: 400;
+  fill: #a1a1aa;
+  letter-spacing: 0.1px;
+}
+
+.genre-network-label.highlighted {
+  fill: #ffffff !important;
+  opacity: 1 !important;
+  font-weight: 600;
+}
+
+.genre-network-label.dimmed {
+  opacity: 0.12 !important;
+}
+
 
 

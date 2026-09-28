@@ -1,0 +1,2618 @@
+{
+  "nodes": [
+    {
+      "id": "rock",
+      "name": "Rock",
+      "reach": 403375,
+      "taggings": 4076290,
+      "isMajor": true,
+      "radius": 25.0
+    },
+    {
+      "id": "pop",
+      "name": "Pop",
+      "reach": 234227,
+      "taggings": 2090909,
+      "isMajor": true,
+      "radius": 19.9
+    },
+    {
+      "id": "electronic",
+      "name": "Electronic",
+      "reach": 262812,
+      "taggings": 2508457,
+      "isMajor": true,
+      "radius": 20.9
+    },
+    {
+      "id": "indie",
+      "name": "Indie",
+      "reach": 260839,
+      "taggings": 2067738,
+      "isMajor": true,
+      "radius": 20.8
+    },
+    {
+      "id": "metal",
+      "name": "Metal",
+      "reach": 159241,
+      "taggings": 1308476,
+      "isMajor": true,
+      "radius": 17.1
+    },
+    {
+      "id": "hip-hop",
+      "name": "Hip-Hop",
+      "reach": 131662,
+      "taggings": 923577,
+      "isMajor": true,
+      "radius": 15.9
+    },
+    {
+      "id": "jazz",
+      "name": "Jazz",
+      "reach": 150161,
+      "taggings": 1199837,
+      "isMajor": true,
+      "radius": 16.7
+    },
+    {
+      "id": "folk",
+      "name": "Folk",
+      "reach": 151600,
+      "taggings": 962478,
+      "isMajor": true,
+      "radius": 16.8
+    },
+    {
+      "id": "punk",
+      "name": "Punk",
+      "reach": 145726,
+      "taggings": 922615,
+      "isMajor": true,
+      "radius": 16.5
+    },
+    {
+      "id": "ambient",
+      "name": "Ambient",
+      "reach": 150602,
+      "taggings": 1132004,
+      "isMajor": true,
+      "radius": 16.7
+    },
+    {
+      "id": "classical",
+      "name": "Classical",
+      "reach": 75044,
+      "taggings": 581610,
+      "isMajor": true,
+      "radius": 12.9
+    },
+    {
+      "id": "rnb",
+      "name": "R&B",
+      "reach": 57763,
+      "taggings": 388289,
+      "isMajor": true,
+      "radius": 11.8
+    },
+    {
+      "id": "alternative rock",
+      "name": "Alternative Rock",
+      "reach": 170553,
+      "taggings": 1237585,
+      "isMajor": false,
+      "radius": 17.5
+    },
+    {
+      "id": "classic rock",
+      "name": "Classic Rock",
+      "reach": 137147,
+      "taggings": 1149920,
+      "isMajor": false,
+      "radius": 16.1
+    },
+    {
+      "id": "hard rock",
+      "name": "Hard Rock",
+      "reach": 115411,
+      "taggings": 919055,
+      "isMajor": false,
+      "radius": 15.1
+    },
+    {
+      "id": "indie rock",
+      "name": "Indie Rock",
+      "reach": 137758,
+      "taggings": 934764,
+      "isMajor": false,
+      "radius": 16.1
+    },
+    {
+      "id": "progressive rock",
+      "name": "Progressive Rock",
+      "reach": 96885,
+      "taggings": 758506,
+      "isMajor": false,
+      "radius": 14.1
+    },
+    {
+      "id": "psychedelic rock",
+      "name": "Psychedelic Rock",
+      "reach": 46686,
+      "taggings": 303375,
+      "isMajor": false,
+      "radius": 11.0
+    },
+    {
+      "id": "grunge",
+      "name": "Grunge",
+      "reach": 70958,
+      "taggings": 267945,
+      "isMajor": false,
+      "radius": 12.6
+    },
+    {
+      "id": "post-punk",
+      "name": "Post-Punk",
+      "reach": 60669,
+      "taggings": 424848,
+      "isMajor": false,
+      "radius": 12.0
+    },
+    {
+      "id": "garage rock",
+      "name": "Garage Rock",
+      "reach": 29420,
+      "taggings": 137727,
+      "isMajor": false,
+      "radius": 9.5
+    },
+    {
+      "id": "blues rock",
+      "name": "Blues Rock",
+      "reach": 37926,
+      "taggings": 231200,
+      "isMajor": false,
+      "radius": 10.2
+    },
+    {
+      "id": "art rock",
+      "name": "Art Rock",
+      "reach": 19612,
+      "taggings": 120108,
+      "isMajor": false,
+      "radius": 8.4
+    },
+    {
+      "id": "folk rock",
+      "name": "Folk Rock",
+      "reach": 37625,
+      "taggings": 165390,
+      "isMajor": false,
+      "radius": 10.2
+    },
+    {
+      "id": "stoner rock",
+      "name": "Stoner Rock",
+      "reach": 29593,
+      "taggings": 158013,
+      "isMajor": false,
+      "radius": 9.5
+    },
+    {
+      "id": "space rock",
+      "name": "Space Rock",
+      "reach": 15573,
+      "taggings": 89773,
+      "isMajor": false,
+      "radius": 7.9
+    },
+    {
+      "id": "britpop",
+      "name": "Britpop",
+      "reach": 62092,
+      "taggings": 254424,
+      "isMajor": false,
+      "radius": 12.1
+    },
+    {
+      "id": "heavy metal",
+      "name": "Heavy Metal",
+      "reach": 90980,
+      "taggings": 756800,
+      "isMajor": false,
+      "radius": 13.8
+    },
+    {
+      "id": "black metal",
+      "name": "Black Metal",
+      "reach": 64721,
+      "taggings": 910531,
+      "isMajor": false,
+      "radius": 12.2
+    },
+    {
+      "id": "death metal",
+      "name": "Death Metal",
+      "reach": 73068,
+      "taggings": 764660,
+      "isMajor": false,
+      "radius": 12.8
+    },
+    {
+      "id": "thrash metal",
+      "name": "Thrash Metal",
+      "reach": 63024,
+      "taggings": 528122,
+      "isMajor": false,
+      "radius": 12.1
+    },
+    {
+      "id": "doom metal",
+      "name": "Doom Metal",
+      "reach": 42018,
+      "taggings": 331438,
+      "isMajor": false,
+      "radius": 10.6
+    },
+    {
+      "id": "nu metal",
+      "name": "Nu Metal",
+      "reach": 50601,
+      "taggings": 241897,
+      "isMajor": false,
+      "radius": 11.3
+    },
+    {
+      "id": "metalcore",
+      "name": "Metalcore",
+      "reach": 68704,
+      "taggings": 502776,
+      "isMajor": false,
+      "radius": 12.5
+    },
+    {
+      "id": "power metal",
+      "name": "Power Metal",
+      "reach": 50538,
+      "taggings": 366530,
+      "isMajor": false,
+      "radius": 11.3
+    },
+    {
+      "id": "progressive metal",
+      "name": "Progressive Metal",
+      "reach": 63002,
+      "taggings": 456564,
+      "isMajor": false,
+      "radius": 12.1
+    },
+    {
+      "id": "gothic metal",
+      "name": "Gothic Metal",
+      "reach": 46601,
+      "taggings": 274608,
+      "isMajor": false,
+      "radius": 11.0
+    },
+    {
+      "id": "symphonic metal",
+      "name": "Symphonic Metal",
+      "reach": 44790,
+      "taggings": 231676,
+      "isMajor": false,
+      "radius": 10.8
+    },
+    {
+      "id": "melodic death metal",
+      "name": "Melodic Death Metal",
+      "reach": 53865,
+      "taggings": 361482,
+      "isMajor": false,
+      "radius": 11.5
+    },
+    {
+      "id": "sludge metal",
+      "name": "Sludge Metal",
+      "reach": 7953,
+      "taggings": 46122,
+      "isMajor": false,
+      "radius": 6.7
+    },
+    {
+      "id": "folk metal",
+      "name": "Folk Metal",
+      "reach": 34263,
+      "taggings": 192768,
+      "isMajor": false,
+      "radius": 9.9
+    },
+    {
+      "id": "punk rock",
+      "name": "Punk Rock",
+      "reach": 98542,
+      "taggings": 584176,
+      "isMajor": false,
+      "radius": 14.2
+    },
+    {
+      "id": "pop punk",
+      "name": "Pop Punk",
+      "reach": 45388,
+      "taggings": 215051,
+      "isMajor": false,
+      "radius": 10.9
+    },
+    {
+      "id": "hardcore",
+      "name": "Hardcore",
+      "reach": 99790,
+      "taggings": 723804,
+      "isMajor": false,
+      "radius": 14.3
+    },
+    {
+      "id": "post-hardcore",
+      "name": "Post-Hardcore",
+      "reach": 48199,
+      "taggings": 340705,
+      "isMajor": false,
+      "radius": 11.1
+    },
+    {
+      "id": "emo",
+      "name": "Emo",
+      "reach": 67024,
+      "taggings": 353877,
+      "isMajor": false,
+      "radius": 12.4
+    },
+    {
+      "id": "screamo",
+      "name": "Screamo",
+      "reach": 44502,
+      "taggings": 253004,
+      "isMajor": false,
+      "radius": 10.8
+    },
+    {
+      "id": "midwest emo",
+      "name": "Midwest Emo",
+      "reach": 2291,
+      "taggings": 10653,
+      "isMajor": false,
+      "radius": 5.2
+    },
+    {
+      "id": "math rock",
+      "name": "Math Rock",
+      "reach": 17062,
+      "taggings": 65294,
+      "isMajor": false,
+      "radius": 8.1
+    },
+    {
+      "id": "shoegaze",
+      "name": "Shoegaze",
+      "reach": 42668,
+      "taggings": 229210,
+      "isMajor": false,
+      "radius": 10.6
+    },
+    {
+      "id": "dream pop",
+      "name": "Dream Pop",
+      "reach": 26496,
+      "taggings": 144280,
+      "isMajor": false,
+      "radius": 9.2
+    },
+    {
+      "id": "post-rock",
+      "name": "Post-Rock",
+      "reach": 66359,
+      "taggings": 460554,
+      "isMajor": false,
+      "radius": 12.4
+    },
+    {
+      "id": "lo-fi",
+      "name": "Lo-Fi",
+      "reach": 35394,
+      "taggings": 173686,
+      "isMajor": false,
+      "radius": 10.0
+    },
+    {
+      "id": "noise rock",
+      "name": "Noise Rock",
+      "reach": 18167,
+      "taggings": 100896,
+      "isMajor": false,
+      "radius": 8.2
+    },
+    {
+      "id": "slowcore",
+      "name": "Slowcore",
+      "reach": 7355,
+      "taggings": 28307,
+      "isMajor": false,
+      "radius": 6.6
+    },
+    {
+      "id": "indie pop",
+      "name": "Indie Pop",
+      "reach": 67938,
+      "taggings": 408562,
+      "isMajor": false,
+      "radius": 12.5
+    },
+    {
+      "id": "chamber pop",
+      "name": "Chamber Pop",
+      "reach": 5231,
+      "taggings": 23694,
+      "isMajor": false,
+      "radius": 6.1
+    },
+    {
+      "id": "blackgaze",
+      "name": "Blackgaze",
+      "reach": 2331,
+      "taggings": 8844,
+      "isMajor": false,
+      "radius": 5.2
+    },
+    {
+      "id": "techno",
+      "name": "Techno",
+      "reach": 72716,
+      "taggings": 447477,
+      "isMajor": false,
+      "radius": 12.8
+    },
+    {
+      "id": "house",
+      "name": "House",
+      "reach": 75123,
+      "taggings": 454655,
+      "isMajor": false,
+      "radius": 12.9
+    },
+    {
+      "id": "synthpop",
+      "name": "Synthpop",
+      "reach": 48449,
+      "taggings": 301425,
+      "isMajor": false,
+      "radius": 11.1
+    },
+    {
+      "id": "idm",
+      "name": "IDM",
+      "reach": 39223,
+      "taggings": 268002,
+      "isMajor": false,
+      "radius": 10.4
+    },
+    {
+      "id": "downtempo",
+      "name": "Downtempo",
+      "reach": 56292,
+      "taggings": 357064,
+      "isMajor": false,
+      "radius": 11.7
+    },
+    {
+      "id": "drum and bass",
+      "name": "Drum And Bass",
+      "reach": 37220,
+      "taggings": 229128,
+      "isMajor": false,
+      "radius": 10.2
+    },
+    {
+      "id": "trip-hop",
+      "name": "Trip-Hop",
+      "reach": 71770,
+      "taggings": 389054,
+      "isMajor": false,
+      "radius": 12.7
+    },
+    {
+      "id": "industrial",
+      "name": "Industrial",
+      "reach": 85292,
+      "taggings": 587795,
+      "isMajor": false,
+      "radius": 13.5
+    },
+    {
+      "id": "trance",
+      "name": "Trance",
+      "reach": 65553,
+      "taggings": 438423,
+      "isMajor": false,
+      "radius": 12.3
+    },
+    {
+      "id": "dubstep",
+      "name": "Dubstep",
+      "reach": 37394,
+      "taggings": 203617,
+      "isMajor": false,
+      "radius": 10.2
+    },
+    {
+      "id": "ambient techno",
+      "name": "Ambient Techno",
+      "reach": 2978,
+      "taggings": 13429,
+      "isMajor": false,
+      "radius": 5.5
+    },
+    {
+      "id": "electro",
+      "name": "Electro",
+      "reach": 76875,
+      "taggings": 395073,
+      "isMajor": false,
+      "radius": 13.0
+    },
+    {
+      "id": "electronica",
+      "name": "Electronica",
+      "reach": 102610,
+      "taggings": 639847,
+      "isMajor": false,
+      "radius": 14.5
+    },
+    {
+      "id": "deep house",
+      "name": "Deep House",
+      "reach": 14162,
+      "taggings": 83188,
+      "isMajor": false,
+      "radius": 7.7
+    },
+    {
+      "id": "breakbeat",
+      "name": "Breakbeat",
+      "reach": 19524,
+      "taggings": 94977,
+      "isMajor": false,
+      "radius": 8.4
+    },
+    {
+      "id": "synthwave",
+      "name": "Synthwave",
+      "reach": 4457,
+      "taggings": 26432,
+      "isMajor": false,
+      "radius": 5.9
+    },
+    {
+      "id": "darkwave",
+      "name": "Darkwave",
+      "reach": 34627,
+      "taggings": 215076,
+      "isMajor": false,
+      "radius": 10.0
+    },
+    {
+      "id": "vaporwave",
+      "name": "Vaporwave",
+      "reach": 3794,
+      "taggings": 18578,
+      "isMajor": false,
+      "radius": 5.7
+    },
+    {
+      "id": "future bass",
+      "name": "Future Bass",
+      "reach": 1219,
+      "taggings": 6185,
+      "isMajor": false,
+      "radius": 4.7
+    },
+    {
+      "id": "garage",
+      "name": "Garage",
+      "reach": 15701,
+      "taggings": 62159,
+      "isMajor": false,
+      "radius": 7.9
+    },
+    {
+      "id": "uk garage",
+      "name": "UK Garage",
+      "reach": 3600,
+      "taggings": 20832,
+      "isMajor": false,
+      "radius": 5.7
+    },
+    {
+      "id": "disco",
+      "name": "Disco",
+      "reach": 37135,
+      "taggings": 172707,
+      "isMajor": false,
+      "radius": 10.2
+    },
+    {
+      "id": "dance",
+      "name": "Dance",
+      "reach": 134548,
+      "taggings": 822392,
+      "isMajor": false,
+      "radius": 16.0
+    },
+    {
+      "id": "rap",
+      "name": "Rap",
+      "reach": 111324,
+      "taggings": 629960,
+      "isMajor": false,
+      "radius": 14.9
+    },
+    {
+      "id": "trap",
+      "name": "Trap",
+      "reach": 11680,
+      "taggings": 67370,
+      "isMajor": false,
+      "radius": 7.3
+    },
+    {
+      "id": "soul",
+      "name": "Soul",
+      "reach": 102249,
+      "taggings": 698359,
+      "isMajor": false,
+      "radius": 14.4
+    },
+    {
+      "id": "funk",
+      "name": "Funk",
+      "reach": 84245,
+      "taggings": 440249,
+      "isMajor": false,
+      "radius": 13.4
+    },
+    {
+      "id": "neo-soul",
+      "name": "Neo-Soul",
+      "reach": 12001,
+      "taggings": 55044,
+      "isMajor": false,
+      "radius": 7.4
+    },
+    {
+      "id": "boom bap",
+      "name": "Boom Bap",
+      "reach": 1159,
+      "taggings": 8800,
+      "isMajor": false,
+      "radius": 4.7
+    },
+    {
+      "id": "cloud rap",
+      "name": "Cloud Rap",
+      "reach": 3527,
+      "taggings": 20796,
+      "isMajor": false,
+      "radius": 5.6
+    },
+    {
+      "id": "gangsta rap",
+      "name": "Gangsta Rap",
+      "reach": 13571,
+      "taggings": 75285,
+      "isMajor": false,
+      "radius": 7.6
+    },
+    {
+      "id": "singer-songwriter",
+      "name": "Singer-Songwriter",
+      "reach": 110191,
+      "taggings": 860513,
+      "isMajor": false,
+      "radius": 14.8
+    },
+    {
+      "id": "acoustic",
+      "name": "Acoustic",
+      "reach": 111913,
+      "taggings": 487018,
+      "isMajor": false,
+      "radius": 14.9
+    },
+    {
+      "id": "blues",
+      "name": "Blues",
+      "reach": 96511,
+      "taggings": 557018,
+      "isMajor": false,
+      "radius": 14.1
+    },
+    {
+      "id": "country",
+      "name": "Country",
+      "reach": 60139,
+      "taggings": 377372,
+      "isMajor": false,
+      "radius": 11.9
+    },
+    {
+      "id": "bluegrass",
+      "name": "Bluegrass",
+      "reach": 12139,
+      "taggings": 49797,
+      "isMajor": false,
+      "radius": 7.4
+    },
+    {
+      "id": "americana",
+      "name": "Americana",
+      "reach": 15725,
+      "taggings": 92628,
+      "isMajor": false,
+      "radius": 7.9
+    },
+    {
+      "id": "reggae",
+      "name": "Reggae",
+      "reach": 80133,
+      "taggings": 403705,
+      "isMajor": false,
+      "radius": 13.2
+    },
+    {
+      "id": "dub",
+      "name": "Dub",
+      "reach": 34987,
+      "taggings": 162553,
+      "isMajor": false,
+      "radius": 10.0
+    },
+    {
+      "id": "ska",
+      "name": "Ska",
+      "reach": 53158,
+      "taggings": 216487,
+      "isMajor": false,
+      "radius": 11.4
+    },
+    {
+      "id": "jazz fusion",
+      "name": "Jazz Fusion",
+      "reach": 12479,
+      "taggings": 283046,
+      "isMajor": false,
+      "radius": 7.4
+    },
+    {
+      "id": "bossa nova",
+      "name": "Bossa Nova",
+      "reach": 20191,
+      "taggings": 71275,
+      "isMajor": false,
+      "radius": 8.5
+    },
+    {
+      "id": "bebop",
+      "name": "Bebop",
+      "reach": 7003,
+      "taggings": 32470,
+      "isMajor": false,
+      "radius": 6.5
+    },
+    {
+      "id": "smooth jazz",
+      "name": "Smooth Jazz",
+      "reach": 18225,
+      "taggings": 121695,
+      "isMajor": false,
+      "radius": 8.2
+    },
+    {
+      "id": "electropop",
+      "name": "Electropop",
+      "reach": 33163,
+      "taggings": 145126,
+      "isMajor": false,
+      "radius": 9.8
+    },
+    {
+      "id": "hyperpop",
+      "name": "Hyperpop",
+      "reach": 3280,
+      "taggings": 9733,
+      "isMajor": false,
+      "radius": 5.6
+    },
+    {
+      "id": "k-pop",
+      "name": "K-Pop",
+      "reach": 13044,
+      "taggings": 122869,
+      "isMajor": false,
+      "radius": 7.5
+    },
+    {
+      "id": "j-pop",
+      "name": "J-Pop",
+      "reach": 26949,
+      "taggings": 237171,
+      "isMajor": false,
+      "radius": 9.2
+    },
+    {
+      "id": "deathcore",
+      "name": "Deathcore",
+      "reach": 26120,
+      "taggings": 195316,
+      "isMajor": false,
+      "radius": 9.1
+    },
+    {
+      "id": "groove metal",
+      "name": "Groove Metal",
+      "reach": 15250,
+      "taggings": 72968,
+      "isMajor": false,
+      "radius": 7.8
+    },
+    {
+      "id": "mathcore",
+      "name": "Mathcore",
+      "reach": 15690,
+      "taggings": 78170,
+      "isMajor": false,
+      "radius": 7.9
+    },
+    {
+      "id": "stoner metal",
+      "name": "Stoner Metal",
+      "reach": 10990,
+      "taggings": 53866,
+      "isMajor": false,
+      "radius": 7.2
+    },
+    {
+      "id": "atmospheric black metal",
+      "name": "Atmospheric Black Metal",
+      "reach": 12383,
+      "taggings": 95157,
+      "isMajor": false,
+      "radius": 7.4
+    },
+    {
+      "id": "viking metal",
+      "name": "Viking Metal",
+      "reach": 21186,
+      "taggings": 95476,
+      "isMajor": false,
+      "radius": 8.6
+    },
+    {
+      "id": "technical death metal",
+      "name": "Technical Death Metal",
+      "reach": 17206,
+      "taggings": 116285,
+      "isMajor": false,
+      "radius": 8.1
+    },
+    {
+      "id": "funeral doom",
+      "name": "Funeral Doom",
+      "reach": 4755,
+      "taggings": 20846,
+      "isMajor": false,
+      "radius": 6.0
+    },
+    {
+      "id": "speed metal",
+      "name": "Speed Metal",
+      "reach": 21734,
+      "taggings": 103012,
+      "isMajor": false,
+      "radius": 8.7
+    },
+    {
+      "id": "folk punk",
+      "name": "Folk Punk",
+      "reach": 9142,
+      "taggings": 25314,
+      "isMajor": false,
+      "radius": 6.9
+    },
+    {
+      "id": "skate punk",
+      "name": "Skate Punk",
+      "reach": 5146,
+      "taggings": 20260,
+      "isMajor": false,
+      "radius": 6.1
+    },
+    {
+      "id": "anarcho-punk",
+      "name": "Anarcho-punk",
+      "reach": 4479,
+      "taggings": 18753,
+      "isMajor": false,
+      "radius": 5.9
+    },
+    {
+      "id": "street punk",
+      "name": "Street Punk",
+      "reach": 6511,
+      "taggings": 29186,
+      "isMajor": false,
+      "radius": 6.4
+    },
+    {
+      "id": "melodic hardcore",
+      "name": "Melodic Hardcore",
+      "reach": 16916,
+      "taggings": 90530,
+      "isMajor": false,
+      "radius": 8.1
+    },
+    {
+      "id": "riot grrrl",
+      "name": "Riot Grrrl",
+      "reach": 6234,
+      "taggings": 23592,
+      "isMajor": false,
+      "radius": 6.3
+    },
+    {
+      "id": "post-grunge",
+      "name": "Post-grunge",
+      "reach": 15048,
+      "taggings": 59507,
+      "isMajor": false,
+      "radius": 7.8
+    },
+    {
+      "id": "krautrock",
+      "name": "Krautrock",
+      "reach": 11089,
+      "taggings": 82469,
+      "isMajor": false,
+      "radius": 7.2
+    },
+    {
+      "id": "neo-psychedelia",
+      "name": "Neo-psychedelia",
+      "reach": 4402,
+      "taggings": 35218,
+      "isMajor": false,
+      "radius": 5.9
+    },
+    {
+      "id": "jangle pop",
+      "name": "Jangle Pop",
+      "reach": 2267,
+      "taggings": 15442,
+      "isMajor": false,
+      "radius": 5.2
+    },
+    {
+      "id": "twee pop",
+      "name": "Twee Pop",
+      "reach": 2168,
+      "taggings": 10162,
+      "isMajor": false,
+      "radius": 5.2
+    },
+    {
+      "id": "freak folk",
+      "name": "Freak Folk",
+      "reach": 10161,
+      "taggings": 37069,
+      "isMajor": false,
+      "radius": 7.1
+    },
+    {
+      "id": "gothic rock",
+      "name": "Gothic Rock",
+      "reach": 33628,
+      "taggings": 180481,
+      "isMajor": false,
+      "radius": 9.9
+    },
+    {
+      "id": "no wave",
+      "name": "No Wave",
+      "reach": 5988,
+      "taggings": 24236,
+      "isMajor": false,
+      "radius": 6.3
+    },
+    {
+      "id": "desert rock",
+      "name": "Desert Rock",
+      "reach": 4751,
+      "taggings": 14042,
+      "isMajor": false,
+      "radius": 6.0
+    },
+    {
+      "id": "sadcore",
+      "name": "Sadcore",
+      "reach": 2966,
+      "taggings": 9874,
+      "isMajor": false,
+      "radius": 5.5
+    },
+    {
+      "id": "noise pop",
+      "name": "Noise Pop",
+      "reach": 7568,
+      "taggings": 33634,
+      "isMajor": false,
+      "radius": 6.6
+    },
+    {
+      "id": "hardstyle",
+      "name": "Hardstyle",
+      "reach": 6355,
+      "taggings": 44039,
+      "isMajor": false,
+      "radius": 6.4
+    },
+    {
+      "id": "chiptune",
+      "name": "Chiptune",
+      "reach": 9894,
+      "taggings": 43813,
+      "isMajor": false,
+      "radius": 7.0
+    },
+    {
+      "id": "witch house",
+      "name": "Witch House",
+      "reach": 6710,
+      "taggings": 29099,
+      "isMajor": false,
+      "radius": 6.4
+    },
+    {
+      "id": "jungle",
+      "name": "Jungle",
+      "reach": 12022,
+      "taggings": 49531,
+      "isMajor": false,
+      "radius": 7.4
+    },
+    {
+      "id": "future garage",
+      "name": "Future Garage",
+      "reach": 2540,
+      "taggings": 12860,
+      "isMajor": false,
+      "radius": 5.3
+    },
+    {
+      "id": "chillwave",
+      "name": "Chillwave",
+      "reach": 8516,
+      "taggings": 34786,
+      "isMajor": false,
+      "radius": 6.8
+    },
+    {
+      "id": "acid techno",
+      "name": "Acid Techno",
+      "reach": 1836,
+      "taggings": 9320,
+      "isMajor": false,
+      "radius": 5.0
+    },
+    {
+      "id": "acid house",
+      "name": "Acid House",
+      "reach": 3625,
+      "taggings": 15413,
+      "isMajor": false,
+      "radius": 5.7
+    },
+    {
+      "id": "minimal techno",
+      "name": "Minimal Techno",
+      "reach": 12269,
+      "taggings": 72796,
+      "isMajor": false,
+      "radius": 7.4
+    },
+    {
+      "id": "glitch",
+      "name": "Glitch",
+      "reach": 17729,
+      "taggings": 78522,
+      "isMajor": false,
+      "radius": 8.2
+    },
+    {
+      "id": "drone",
+      "name": "Drone",
+      "reach": 25767,
+      "taggings": 163804,
+      "isMajor": false,
+      "radius": 9.1
+    },
+    {
+      "id": "breakcore",
+      "name": "Breakcore",
+      "reach": 16152,
+      "taggings": 81066,
+      "isMajor": false,
+      "radius": 8.0
+    },
+    {
+      "id": "nu-disco",
+      "name": "Nu-disco",
+      "reach": 1248,
+      "taggings": 6185,
+      "isMajor": false,
+      "radius": 4.7
+    },
+    {
+      "id": "drill",
+      "name": "Drill",
+      "reach": 1279,
+      "taggings": 5171,
+      "isMajor": false,
+      "radius": 4.7
+    },
+    {
+      "id": "grime",
+      "name": "Grime",
+      "reach": 10720,
+      "taggings": 37006,
+      "isMajor": false,
+      "radius": 7.2
+    },
+    {
+      "id": "jazz rap",
+      "name": "Jazz Rap",
+      "reach": 1463,
+      "taggings": 7112,
+      "isMajor": false,
+      "radius": 4.8
+    },
+    {
+      "id": "phonk",
+      "name": "Phonk",
+      "reach": 1480,
+      "taggings": 7487,
+      "isMajor": false,
+      "radius": 4.8
+    },
+    {
+      "id": "crunk",
+      "name": "Crunk",
+      "reach": 4836,
+      "taggings": 18177,
+      "isMajor": false,
+      "radius": 6.0
+    },
+    {
+      "id": "anti-folk",
+      "name": "Anti-Folk",
+      "reach": 3915,
+      "taggings": 8766,
+      "isMajor": false,
+      "radius": 5.7
+    },
+    {
+      "id": "city pop",
+      "name": "City Pop",
+      "reach": 902,
+      "taggings": 3153,
+      "isMajor": false,
+      "radius": 4.5
+    },
+    {
+      "id": "celtic",
+      "name": "Celtic",
+      "reach": 29080,
+      "taggings": 134582,
+      "isMajor": false,
+      "radius": 9.4
+    }
+  ],
+  "links": [
+    {
+      "source": "rock",
+      "target": "classic rock"
+    },
+    {
+      "source": "rock",
+      "target": "hard rock"
+    },
+    {
+      "source": "rock",
+      "target": "alternative rock"
+    },
+    {
+      "source": "rock",
+      "target": "indie rock"
+    },
+    {
+      "source": "rock",
+      "target": "progressive rock"
+    },
+    {
+      "source": "rock",
+      "target": "psychedelic rock"
+    },
+    {
+      "source": "rock",
+      "target": "punk rock"
+    },
+    {
+      "source": "rock",
+      "target": "blues rock"
+    },
+    {
+      "source": "rock",
+      "target": "art rock"
+    },
+    {
+      "source": "rock",
+      "target": "folk rock"
+    },
+    {
+      "source": "rock",
+      "target": "garage rock"
+    },
+    {
+      "source": "rock",
+      "target": "metal"
+    },
+    {
+      "source": "rock",
+      "target": "blues"
+    },
+    {
+      "source": "rock",
+      "target": "punk"
+    },
+    {
+      "source": "classic rock",
+      "target": "hard rock"
+    },
+    {
+      "source": "classic rock",
+      "target": "psychedelic rock"
+    },
+    {
+      "source": "classic rock",
+      "target": "blues rock"
+    },
+    {
+      "source": "hard rock",
+      "target": "heavy metal"
+    },
+    {
+      "source": "hard rock",
+      "target": "stoner rock"
+    },
+    {
+      "source": "hard rock",
+      "target": "grunge"
+    },
+    {
+      "source": "progressive rock",
+      "target": "art rock"
+    },
+    {
+      "source": "progressive rock",
+      "target": "space rock"
+    },
+    {
+      "source": "progressive rock",
+      "target": "progressive metal"
+    },
+    {
+      "source": "psychedelic rock",
+      "target": "space rock"
+    },
+    {
+      "source": "psychedelic rock",
+      "target": "stoner rock"
+    },
+    {
+      "source": "psychedelic rock",
+      "target": "garage rock"
+    },
+    {
+      "source": "garage rock",
+      "target": "punk rock"
+    },
+    {
+      "source": "garage rock",
+      "target": "indie rock"
+    },
+    {
+      "source": "blues rock",
+      "target": "blues"
+    },
+    {
+      "source": "folk rock",
+      "target": "folk"
+    },
+    {
+      "source": "folk rock",
+      "target": "singer-songwriter"
+    },
+    {
+      "source": "art rock",
+      "target": "post-rock"
+    },
+    {
+      "source": "britpop",
+      "target": "indie rock"
+    },
+    {
+      "source": "britpop",
+      "target": "alternative rock"
+    },
+    {
+      "source": "alternative rock",
+      "target": "grunge"
+    },
+    {
+      "source": "alternative rock",
+      "target": "post-punk"
+    },
+    {
+      "source": "alternative rock",
+      "target": "indie rock"
+    },
+    {
+      "source": "alternative rock",
+      "target": "nu metal"
+    },
+    {
+      "source": "alternative rock",
+      "target": "pop punk"
+    },
+    {
+      "source": "alternative rock",
+      "target": "shoegaze"
+    },
+    {
+      "source": "indie",
+      "target": "indie rock"
+    },
+    {
+      "source": "indie",
+      "target": "indie pop"
+    },
+    {
+      "source": "indie",
+      "target": "dream pop"
+    },
+    {
+      "source": "indie",
+      "target": "shoegaze"
+    },
+    {
+      "source": "indie",
+      "target": "post-rock"
+    },
+    {
+      "source": "indie",
+      "target": "lo-fi"
+    },
+    {
+      "source": "indie",
+      "target": "folk"
+    },
+    {
+      "source": "indie",
+      "target": "chamber pop"
+    },
+    {
+      "source": "indie rock",
+      "target": "post-punk"
+    },
+    {
+      "source": "indie rock",
+      "target": "math rock"
+    },
+    {
+      "source": "indie rock",
+      "target": "noise rock"
+    },
+    {
+      "source": "indie rock",
+      "target": "midwest emo"
+    },
+    {
+      "source": "indie pop",
+      "target": "dream pop"
+    },
+    {
+      "source": "indie pop",
+      "target": "chamber pop"
+    },
+    {
+      "source": "indie pop",
+      "target": "synthpop"
+    },
+    {
+      "source": "shoegaze",
+      "target": "dream pop"
+    },
+    {
+      "source": "shoegaze",
+      "target": "noise rock"
+    },
+    {
+      "source": "shoegaze",
+      "target": "slowcore"
+    },
+    {
+      "source": "shoegaze",
+      "target": "blackgaze"
+    },
+    {
+      "source": "dream pop",
+      "target": "slowcore"
+    },
+    {
+      "source": "dream pop",
+      "target": "ambient"
+    },
+    {
+      "source": "dream pop",
+      "target": "synthpop"
+    },
+    {
+      "source": "post-rock",
+      "target": "ambient"
+    },
+    {
+      "source": "post-rock",
+      "target": "math rock"
+    },
+    {
+      "source": "post-rock",
+      "target": "space rock"
+    },
+    {
+      "source": "post-rock",
+      "target": "slowcore"
+    },
+    {
+      "source": "math rock",
+      "target": "midwest emo"
+    },
+    {
+      "source": "math rock",
+      "target": "post-hardcore"
+    },
+    {
+      "source": "slowcore",
+      "target": "lo-fi"
+    },
+    {
+      "source": "metal",
+      "target": "heavy metal"
+    },
+    {
+      "source": "metal",
+      "target": "thrash metal"
+    },
+    {
+      "source": "metal",
+      "target": "death metal"
+    },
+    {
+      "source": "metal",
+      "target": "black metal"
+    },
+    {
+      "source": "metal",
+      "target": "doom metal"
+    },
+    {
+      "source": "metal",
+      "target": "nu metal"
+    },
+    {
+      "source": "metal",
+      "target": "metalcore"
+    },
+    {
+      "source": "metal",
+      "target": "power metal"
+    },
+    {
+      "source": "metal",
+      "target": "progressive metal"
+    },
+    {
+      "source": "metal",
+      "target": "sludge metal"
+    },
+    {
+      "source": "metal",
+      "target": "industrial"
+    },
+    {
+      "source": "heavy metal",
+      "target": "thrash metal"
+    },
+    {
+      "source": "heavy metal",
+      "target": "power metal"
+    },
+    {
+      "source": "thrash metal",
+      "target": "death metal"
+    },
+    {
+      "source": "death metal",
+      "target": "melodic death metal"
+    },
+    {
+      "source": "death metal",
+      "target": "black metal"
+    },
+    {
+      "source": "death metal",
+      "target": "sludge metal"
+    },
+    {
+      "source": "black metal",
+      "target": "blackgaze"
+    },
+    {
+      "source": "black metal",
+      "target": "doom metal"
+    },
+    {
+      "source": "black metal",
+      "target": "folk metal"
+    },
+    {
+      "source": "doom metal",
+      "target": "sludge metal"
+    },
+    {
+      "source": "doom metal",
+      "target": "stoner rock"
+    },
+    {
+      "source": "sludge metal",
+      "target": "stoner rock"
+    },
+    {
+      "source": "metalcore",
+      "target": "post-hardcore"
+    },
+    {
+      "source": "metalcore",
+      "target": "hardcore"
+    },
+    {
+      "source": "metalcore",
+      "target": "nu metal"
+    },
+    {
+      "source": "progressive metal",
+      "target": "power metal"
+    },
+    {
+      "source": "symphonic metal",
+      "target": "power metal"
+    },
+    {
+      "source": "symphonic metal",
+      "target": "gothic metal"
+    },
+    {
+      "source": "gothic metal",
+      "target": "doom metal"
+    },
+    {
+      "source": "gothic metal",
+      "target": "darkwave"
+    },
+    {
+      "source": "folk metal",
+      "target": "folk"
+    },
+    {
+      "source": "punk",
+      "target": "punk rock"
+    },
+    {
+      "source": "punk",
+      "target": "hardcore"
+    },
+    {
+      "source": "punk",
+      "target": "post-punk"
+    },
+    {
+      "source": "punk",
+      "target": "pop punk"
+    },
+    {
+      "source": "punk rock",
+      "target": "hardcore"
+    },
+    {
+      "source": "punk rock",
+      "target": "pop punk"
+    },
+    {
+      "source": "hardcore",
+      "target": "post-hardcore"
+    },
+    {
+      "source": "hardcore",
+      "target": "screamo"
+    },
+    {
+      "source": "post-hardcore",
+      "target": "screamo"
+    },
+    {
+      "source": "post-hardcore",
+      "target": "emo"
+    },
+    {
+      "source": "emo",
+      "target": "midwest emo"
+    },
+    {
+      "source": "emo",
+      "target": "screamo"
+    },
+    {
+      "source": "emo",
+      "target": "pop punk"
+    },
+    {
+      "source": "emo",
+      "target": "indie rock"
+    },
+    {
+      "source": "post-punk",
+      "target": "darkwave"
+    },
+    {
+      "source": "post-punk",
+      "target": "gothic metal"
+    },
+    {
+      "source": "post-punk",
+      "target": "noise rock"
+    },
+    {
+      "source": "post-punk",
+      "target": "synthpop"
+    },
+    {
+      "source": "electronic",
+      "target": "ambient"
+    },
+    {
+      "source": "electronic",
+      "target": "techno"
+    },
+    {
+      "source": "electronic",
+      "target": "house"
+    },
+    {
+      "source": "electronic",
+      "target": "synthpop"
+    },
+    {
+      "source": "electronic",
+      "target": "idm"
+    },
+    {
+      "source": "electronic",
+      "target": "downtempo"
+    },
+    {
+      "source": "electronic",
+      "target": "drum and bass"
+    },
+    {
+      "source": "electronic",
+      "target": "trip-hop"
+    },
+    {
+      "source": "electronic",
+      "target": "industrial"
+    },
+    {
+      "source": "electronic",
+      "target": "trance"
+    },
+    {
+      "source": "electronic",
+      "target": "dubstep"
+    },
+    {
+      "source": "electronic",
+      "target": "electro"
+    },
+    {
+      "source": "electronic",
+      "target": "electronica"
+    },
+    {
+      "source": "electronic",
+      "target": "dance"
+    },
+    {
+      "source": "techno",
+      "target": "ambient techno"
+    },
+    {
+      "source": "techno",
+      "target": "house"
+    },
+    {
+      "source": "techno",
+      "target": "industrial"
+    },
+    {
+      "source": "techno",
+      "target": "electro"
+    },
+    {
+      "source": "ambient techno",
+      "target": "ambient"
+    },
+    {
+      "source": "ambient techno",
+      "target": "idm"
+    },
+    {
+      "source": "house",
+      "target": "deep house"
+    },
+    {
+      "source": "house",
+      "target": "disco"
+    },
+    {
+      "source": "house",
+      "target": "dance"
+    },
+    {
+      "source": "house",
+      "target": "garage"
+    },
+    {
+      "source": "house",
+      "target": "uk garage"
+    },
+    {
+      "source": "deep house",
+      "target": "garage"
+    },
+    {
+      "source": "garage",
+      "target": "uk garage"
+    },
+    {
+      "source": "uk garage",
+      "target": "dubstep"
+    },
+    {
+      "source": "uk garage",
+      "target": "drum and bass"
+    },
+    {
+      "source": "drum and bass",
+      "target": "breakbeat"
+    },
+    {
+      "source": "drum and bass",
+      "target": "dubstep"
+    },
+    {
+      "source": "breakbeat",
+      "target": "electro"
+    },
+    {
+      "source": "dubstep",
+      "target": "future bass"
+    },
+    {
+      "source": "future bass",
+      "target": "trap"
+    },
+    {
+      "source": "synthpop",
+      "target": "electropop"
+    },
+    {
+      "source": "synthpop",
+      "target": "synthwave"
+    },
+    {
+      "source": "synthpop",
+      "target": "darkwave"
+    },
+    {
+      "source": "synthpop",
+      "target": "dance"
+    },
+    {
+      "source": "synthwave",
+      "target": "vaporwave"
+    },
+    {
+      "source": "synthwave",
+      "target": "electro"
+    },
+    {
+      "source": "vaporwave",
+      "target": "lo-fi"
+    },
+    {
+      "source": "darkwave",
+      "target": "industrial"
+    },
+    {
+      "source": "industrial",
+      "target": "noise rock"
+    },
+    {
+      "source": "idm",
+      "target": "ambient"
+    },
+    {
+      "source": "idm",
+      "target": "breakbeat"
+    },
+    {
+      "source": "idm",
+      "target": "downtempo"
+    },
+    {
+      "source": "trip-hop",
+      "target": "downtempo"
+    },
+    {
+      "source": "trip-hop",
+      "target": "hip-hop"
+    },
+    {
+      "source": "trip-hop",
+      "target": "ambient"
+    },
+    {
+      "source": "dance",
+      "target": "disco"
+    },
+    {
+      "source": "dance",
+      "target": "pop"
+    },
+    {
+      "source": "hip-hop",
+      "target": "rap"
+    },
+    {
+      "source": "hip-hop",
+      "target": "trap"
+    },
+    {
+      "source": "hip-hop",
+      "target": "boom bap"
+    },
+    {
+      "source": "hip-hop",
+      "target": "cloud rap"
+    },
+    {
+      "source": "hip-hop",
+      "target": "gangsta rap"
+    },
+    {
+      "source": "hip-hop",
+      "target": "rnb"
+    },
+    {
+      "source": "hip-hop",
+      "target": "soul"
+    },
+    {
+      "source": "hip-hop",
+      "target": "funk"
+    },
+    {
+      "source": "rap",
+      "target": "trap"
+    },
+    {
+      "source": "rap",
+      "target": "boom bap"
+    },
+    {
+      "source": "rap",
+      "target": "gangsta rap"
+    },
+    {
+      "source": "trap",
+      "target": "cloud rap"
+    },
+    {
+      "source": "rnb",
+      "target": "soul"
+    },
+    {
+      "source": "rnb",
+      "target": "neo-soul"
+    },
+    {
+      "source": "rnb",
+      "target": "pop"
+    },
+    {
+      "source": "soul",
+      "target": "funk"
+    },
+    {
+      "source": "soul",
+      "target": "neo-soul"
+    },
+    {
+      "source": "soul",
+      "target": "blues"
+    },
+    {
+      "source": "funk",
+      "target": "disco"
+    },
+    {
+      "source": "funk",
+      "target": "jazz fusion"
+    },
+    {
+      "source": "neo-soul",
+      "target": "jazz"
+    },
+    {
+      "source": "folk",
+      "target": "acoustic"
+    },
+    {
+      "source": "folk",
+      "target": "singer-songwriter"
+    },
+    {
+      "source": "folk",
+      "target": "country"
+    },
+    {
+      "source": "folk",
+      "target": "bluegrass"
+    },
+    {
+      "source": "folk",
+      "target": "americana"
+    },
+    {
+      "source": "folk",
+      "target": "blues"
+    },
+    {
+      "source": "singer-songwriter",
+      "target": "acoustic"
+    },
+    {
+      "source": "singer-songwriter",
+      "target": "indie pop"
+    },
+    {
+      "source": "country",
+      "target": "bluegrass"
+    },
+    {
+      "source": "country",
+      "target": "americana"
+    },
+    {
+      "source": "country",
+      "target": "blues"
+    },
+    {
+      "source": "blues",
+      "target": "jazz"
+    },
+    {
+      "source": "reggae",
+      "target": "dub"
+    },
+    {
+      "source": "reggae",
+      "target": "ska"
+    },
+    {
+      "source": "ska",
+      "target": "punk rock"
+    },
+    {
+      "source": "dub",
+      "target": "trip-hop"
+    },
+    {
+      "source": "jazz",
+      "target": "jazz fusion"
+    },
+    {
+      "source": "jazz",
+      "target": "bebop"
+    },
+    {
+      "source": "jazz",
+      "target": "bossa nova"
+    },
+    {
+      "source": "jazz",
+      "target": "smooth jazz"
+    },
+    {
+      "source": "jazz",
+      "target": "soul"
+    },
+    {
+      "source": "jazz fusion",
+      "target": "progressive rock"
+    },
+    {
+      "source": "bossa nova",
+      "target": "chamber pop"
+    },
+    {
+      "source": "classical",
+      "target": "ambient"
+    },
+    {
+      "source": "classical",
+      "target": "post-rock"
+    },
+    {
+      "source": "classical",
+      "target": "art rock"
+    },
+    {
+      "source": "pop",
+      "target": "electropop"
+    },
+    {
+      "source": "pop",
+      "target": "synthpop"
+    },
+    {
+      "source": "pop",
+      "target": "indie pop"
+    },
+    {
+      "source": "pop",
+      "target": "k-pop"
+    },
+    {
+      "source": "pop",
+      "target": "j-pop"
+    },
+    {
+      "source": "electropop",
+      "target": "hyperpop"
+    },
+    {
+      "source": "hyperpop",
+      "target": "cloud rap"
+    },
+    {
+      "source": "k-pop",
+      "target": "dance"
+    },
+    {
+      "source": "j-pop",
+      "target": "electropop"
+    },
+    {
+      "source": "deathcore",
+      "target": "metalcore"
+    },
+    {
+      "source": "deathcore",
+      "target": "death metal"
+    },
+    {
+      "source": "groove metal",
+      "target": "thrash metal"
+    },
+    {
+      "source": "groove metal",
+      "target": "heavy metal"
+    },
+    {
+      "source": "mathcore",
+      "target": "metalcore"
+    },
+    {
+      "source": "mathcore",
+      "target": "hardcore"
+    },
+    {
+      "source": "mathcore",
+      "target": "math rock"
+    },
+    {
+      "source": "stoner metal",
+      "target": "doom metal"
+    },
+    {
+      "source": "stoner metal",
+      "target": "stoner rock"
+    },
+    {
+      "source": "stoner metal",
+      "target": "sludge metal"
+    },
+    {
+      "source": "atmospheric black metal",
+      "target": "black metal"
+    },
+    {
+      "source": "atmospheric black metal",
+      "target": "ambient"
+    },
+    {
+      "source": "atmospheric black metal",
+      "target": "blackgaze"
+    },
+    {
+      "source": "viking metal",
+      "target": "folk metal"
+    },
+    {
+      "source": "viking metal",
+      "target": "black metal"
+    },
+    {
+      "source": "technical death metal",
+      "target": "death metal"
+    },
+    {
+      "source": "technical death metal",
+      "target": "progressive metal"
+    },
+    {
+      "source": "funeral doom",
+      "target": "doom metal"
+    },
+    {
+      "source": "funeral doom",
+      "target": "ambient"
+    },
+    {
+      "source": "speed metal",
+      "target": "thrash metal"
+    },
+    {
+      "source": "speed metal",
+      "target": "heavy metal"
+    },
+    {
+      "source": "speed metal",
+      "target": "power metal"
+    },
+    {
+      "source": "folk punk",
+      "target": "punk rock"
+    },
+    {
+      "source": "folk punk",
+      "target": "folk"
+    },
+    {
+      "source": "folk punk",
+      "target": "acoustic"
+    },
+    {
+      "source": "skate punk",
+      "target": "punk rock"
+    },
+    {
+      "source": "skate punk",
+      "target": "pop punk"
+    },
+    {
+      "source": "skate punk",
+      "target": "hardcore"
+    },
+    {
+      "source": "anarcho-punk",
+      "target": "punk rock"
+    },
+    {
+      "source": "anarcho-punk",
+      "target": "hardcore"
+    },
+    {
+      "source": "street punk",
+      "target": "punk rock"
+    },
+    {
+      "source": "street punk",
+      "target": "hardcore"
+    },
+    {
+      "source": "melodic hardcore",
+      "target": "hardcore"
+    },
+    {
+      "source": "melodic hardcore",
+      "target": "punk rock"
+    },
+    {
+      "source": "melodic hardcore",
+      "target": "post-hardcore"
+    },
+    {
+      "source": "riot grrrl",
+      "target": "punk rock"
+    },
+    {
+      "source": "riot grrrl",
+      "target": "indie rock"
+    },
+    {
+      "source": "riot grrrl",
+      "target": "garage rock"
+    },
+    {
+      "source": "post-grunge",
+      "target": "grunge"
+    },
+    {
+      "source": "post-grunge",
+      "target": "alternative rock"
+    },
+    {
+      "source": "post-grunge",
+      "target": "hard rock"
+    },
+    {
+      "source": "krautrock",
+      "target": "psychedelic rock"
+    },
+    {
+      "source": "krautrock",
+      "target": "art rock"
+    },
+    {
+      "source": "krautrock",
+      "target": "electronic"
+    },
+    {
+      "source": "neo-psychedelia",
+      "target": "psychedelic rock"
+    },
+    {
+      "source": "neo-psychedelia",
+      "target": "indie rock"
+    },
+    {
+      "source": "neo-psychedelia",
+      "target": "dream pop"
+    },
+    {
+      "source": "jangle pop",
+      "target": "indie pop"
+    },
+    {
+      "source": "jangle pop",
+      "target": "indie rock"
+    },
+    {
+      "source": "jangle pop",
+      "target": "post-punk"
+    },
+    {
+      "source": "twee pop",
+      "target": "indie pop"
+    },
+    {
+      "source": "twee pop",
+      "target": "lo-fi"
+    },
+    {
+      "source": "freak folk",
+      "target": "folk"
+    },
+    {
+      "source": "freak folk",
+      "target": "indie"
+    },
+    {
+      "source": "freak folk",
+      "target": "psychedelic rock"
+    },
+    {
+      "source": "gothic rock",
+      "target": "post-punk"
+    },
+    {
+      "source": "gothic rock",
+      "target": "darkwave"
+    },
+    {
+      "source": "no wave",
+      "target": "post-punk"
+    },
+    {
+      "source": "no wave",
+      "target": "noise rock"
+    },
+    {
+      "source": "no wave",
+      "target": "art rock"
+    },
+    {
+      "source": "desert rock",
+      "target": "stoner rock"
+    },
+    {
+      "source": "desert rock",
+      "target": "hard rock"
+    },
+    {
+      "source": "sadcore",
+      "target": "slowcore"
+    },
+    {
+      "source": "sadcore",
+      "target": "indie rock"
+    },
+    {
+      "source": "sadcore",
+      "target": "lo-fi"
+    },
+    {
+      "source": "noise pop",
+      "target": "shoegaze"
+    },
+    {
+      "source": "noise pop",
+      "target": "noise rock"
+    },
+    {
+      "source": "noise pop",
+      "target": "indie pop"
+    },
+    {
+      "source": "hardstyle",
+      "target": "trance"
+    },
+    {
+      "source": "hardstyle",
+      "target": "electronic"
+    },
+    {
+      "source": "chiptune",
+      "target": "electronic"
+    },
+    {
+      "source": "chiptune",
+      "target": "synthpop"
+    },
+    {
+      "source": "witch house",
+      "target": "darkwave"
+    },
+    {
+      "source": "witch house",
+      "target": "trap"
+    },
+    {
+      "source": "witch house",
+      "target": "electronic"
+    },
+    {
+      "source": "jungle",
+      "target": "drum and bass"
+    },
+    {
+      "source": "jungle",
+      "target": "breakbeat"
+    },
+    {
+      "source": "jungle",
+      "target": "reggae"
+    },
+    {
+      "source": "future garage",
+      "target": "uk garage"
+    },
+    {
+      "source": "future garage",
+      "target": "ambient"
+    },
+    {
+      "source": "future garage",
+      "target": "dubstep"
+    },
+    {
+      "source": "chillwave",
+      "target": "synthwave"
+    },
+    {
+      "source": "chillwave",
+      "target": "dream pop"
+    },
+    {
+      "source": "chillwave",
+      "target": "lo-fi"
+    },
+    {
+      "source": "acid techno",
+      "target": "techno"
+    },
+    {
+      "source": "acid house",
+      "target": "house"
+    },
+    {
+      "source": "acid house",
+      "target": "techno"
+    },
+    {
+      "source": "minimal techno",
+      "target": "techno"
+    },
+    {
+      "source": "minimal techno",
+      "target": "ambient techno"
+    },
+    {
+      "source": "glitch",
+      "target": "idm"
+    },
+    {
+      "source": "glitch",
+      "target": "electronic"
+    },
+    {
+      "source": "drone",
+      "target": "ambient"
+    },
+    {
+      "source": "drone",
+      "target": "post-rock"
+    },
+    {
+      "source": "drone",
+      "target": "doom metal"
+    },
+    {
+      "source": "breakcore",
+      "target": "idm"
+    },
+    {
+      "source": "breakcore",
+      "target": "drum and bass"
+    },
+    {
+      "source": "breakcore",
+      "target": "hardcore"
+    },
+    {
+      "source": "nu-disco",
+      "target": "disco"
+    },
+    {
+      "source": "nu-disco",
+      "target": "house"
+    },
+    {
+      "source": "nu-disco",
+      "target": "electronic"
+    },
+    {
+      "source": "drill",
+      "target": "trap"
+    },
+    {
+      "source": "drill",
+      "target": "rap"
+    },
+    {
+      "source": "grime",
+      "target": "uk garage"
+    },
+    {
+      "source": "grime",
+      "target": "rap"
+    },
+    {
+      "source": "grime",
+      "target": "electronic"
+    },
+    {
+      "source": "jazz rap",
+      "target": "hip-hop"
+    },
+    {
+      "source": "jazz rap",
+      "target": "jazz"
+    },
+    {
+      "source": "jazz rap",
+      "target": "boom bap"
+    },
+    {
+      "source": "phonk",
+      "target": "hip-hop"
+    },
+    {
+      "source": "phonk",
+      "target": "trap"
+    },
+    {
+      "source": "phonk",
+      "target": "lo-fi"
+    },
+    {
+      "source": "crunk",
+      "target": "hip-hop"
+    },
+    {
+      "source": "crunk",
+      "target": "trap"
+    },
+    {
+      "source": "anti-folk",
+      "target": "folk punk"
+    },
+    {
+      "source": "anti-folk",
+      "target": "indie"
+    },
+    {
+      "source": "anti-folk",
+      "target": "lo-fi"
+    },
+    {
+      "source": "city pop",
+      "target": "j-pop"
+    },
+    {
+      "source": "city pop",
+      "target": "disco"
+    },
+    {
+      "source": "city pop",
+      "target": "funk"
+    },
+    {
+      "source": "celtic",
+      "target": "folk"
+    },
+    {
+      "source": "celtic",
+      "target": "acoustic"
+    }
+  ]
+}

@@ -2,27 +2,14 @@
 (function () {
   const defaultPhysics = { attraction: -15, minDistance: 2, gravity: 0.07, sizeScale: 1.0, gravityDynamics: 1.0 };
 
-  function getPhysics() {
-    if (window.__chartPhysics) return window.__chartPhysics;
+  function getScrobblesPhysics() {
+    if (window.__scrobblesPhysics) return window.__scrobblesPhysics;
     try {
-      const saved = JSON.parse(localStorage.getItem("chartfm_physics") || "null");
+      const saved = JSON.parse(localStorage.getItem("chartfm_scrobbles_physics") || "null");
       if (saved) return Object.assign({}, defaultPhysics, saved);
     } catch (e) {}
     return defaultPhysics;
   }
-
-  let currentPhysics = Object.assign({}, getPhysics());
-  if (!window.__chartPhysics) {
-    window.__chartPhysics = Object.assign({}, currentPhysics);
-  }
-
-  const nodeSize = 54; // Central baseline album size
-  const getNodeGravity = (d) => {
-    // Dynamic gravity scaling: gravityDynamics controls the intensity of gravity differences between larger and smaller albums
-    const dyn = currentPhysics.gravityDynamics !== undefined ? currentPhysics.gravityDynamics : 1.0;
-    const scale = d?.size ? Math.pow(d.size / nodeSize, 2.8 * dyn) : 1;
-    return currentPhysics.gravity * scale;
-  };
 
   function preloadImage(url) {
     return new Promise((resolve) => {
@@ -32,8 +19,113 @@
       img.onload = () => { if (!done) { done = true; resolve(true); } };
       img.onerror = () => { if (!done) { done = true; resolve(false); } };
       setTimeout(() => { if (!done) { done = true; resolve(false); } }, 3500);
+      img.referrerPolicy = "no-referrer";
       img.src = url;
+      if (img.complete && img.naturalWidth > 0) {
+        done = true;
+        resolve(true);
+      }
     });
+  }
+
+  function isGifImage(url) {
+    if (!url || typeof url !== "string") return false;
+    const clean = url.split("?")[0].split("#")[0].toLowerCase().trim();
+    return clean.endsWith(".gif") || clean.includes(".gif");
+  }
+
+  // Look up a still replacement image (iTunes -> Last.fm search -> original fallback)
+  async function resolveStillAlbumImage(artist, albumName, fallbackUrl) {
+    const cleanArtist = (typeof artist === "object" ? (artist?.name || artist?.["#text"] || "") : (artist || "")).trim();
+    const cleanAlbum = (albumName || "").trim();
+    if (!cleanAlbum) return fallbackUrl;
+
+    // 1. Try iTunes album search (free, open CORS, high-res still covers)
+    try {
+      const query = encodeURIComponent(`${cleanArtist} ${cleanAlbum}`);
+      const res = await fetch(`https://itunes.apple.com/search?term=${query}&entity=album&limit=3`);
+      if (res.ok) {
+        const data = await res.json();
+        const results = data?.results || [];
+        for (const item of results) {
+          const art = item?.artworkUrl100;
+          if (art && !isGifImage(art)) {
+            return art.replace("100x100bb.jpg", "600x600bb.jpg");
+          }
+        }
+      }
+    } catch (e) {}
+
+    // 2. Try iTunes general search (singles, EPs)
+    try {
+      const query = encodeURIComponent(`${cleanArtist} ${cleanAlbum}`);
+      const res = await fetch(`https://itunes.apple.com/search?term=${query}&limit=3`);
+      if (res.ok) {
+        const data = await res.json();
+        const results = data?.results || [];
+        for (const item of results) {
+          const art = item?.artworkUrl100;
+          if (art && !isGifImage(art)) {
+            return art.replace("100x100bb.jpg", "600x600bb.jpg");
+          }
+        }
+      }
+    } catch (e) {}
+
+    // 3. Try Last.fm album search for an alternative non-gif image
+    try {
+      const apiKey = "b914193d6c62aabcd83adf2b6c457a5f";
+      const res = await fetch(`https://ws.audioscrobbler.com/2.0/?method=album.search&album=${encodeURIComponent(cleanAlbum)}&api_key=${apiKey}&format=json&limit=6`);
+      if (res.ok) {
+        const data = await res.json();
+        const matches = data?.results?.albummatches?.album || [];
+        const matchList = Array.isArray(matches) ? matches : [matches];
+        for (const m of matchList) {
+          const imgs = m?.image || [];
+          const imgList = Array.isArray(imgs) ? imgs : [imgs];
+          const urls = imgList.map((i) => (i?.["#text"] || "").trim()).filter(Boolean);
+          const validUrls = urls.filter((u) => !u.includes("2a96cbd8b46e442fc41c2b86b821562f") && !u.includes("noimage") && !isGifImage(u));
+          if (validUrls.length) {
+            return validUrls[validUrls.length - 1];
+          }
+        }
+      }
+    } catch (e) {}
+
+    // 4. If none available, leave the original GIF
+    return fallbackUrl;
+  }
+
+  // Preload album covers with progress callback until targetCount verified albums are ready
+  async function preloadAlbumCovers(albums, targetCount, onProgress) {
+    const verified = [];
+    const remaining = albums.slice();
+    const concurrency = 8;
+    let nextIdx = 0;
+
+    async function worker() {
+      while (nextIdx < remaining.length && verified.length < targetCount) {
+        const alb = remaining[nextIdx++];
+        if (!alb || !alb.image) continue;
+        if (isGifImage(alb.image)) {
+          alb.image = await resolveStillAlbumImage(alb.artist, alb.name, alb.image);
+        }
+        const ok = await preloadImage(alb.image);
+        if (ok && verified.length < targetCount) {
+          verified.push(alb);
+          if (typeof onProgress === "function") {
+            onProgress(verified.length, targetCount);
+          }
+        }
+      }
+    }
+
+    const workerCount = Math.min(concurrency, remaining.length);
+    await Promise.all(Array.from({ length: workerCount }, () => worker()));
+
+    const verifiedSet = new Set(verified);
+    const rest = remaining.filter((a) => !verifiedSet.has(a));
+    return verified.concat(rest);
   }
 
   // Fetch top albums worldwide (candidate pool)
@@ -135,6 +227,17 @@
     if (!albums.length) {
       throw new Error("No album artwork found for this user's scrobbles.");
     }
+
+    // Replace any gif covers with still pictures if available
+    const gifAlbums = albums.filter((a) => isGifImage(a.image));
+    if (gifAlbums.length > 0) {
+      await Promise.all(
+        gifAlbums.map(async (alb) => {
+          alb.image = await resolveStillAlbumImage(alb.artist, alb.name, alb.image);
+        })
+      );
+    }
+
     return albums;
   }
 
@@ -143,12 +246,17 @@
   // Album detail caching and modal display
   const albumDetailCache = new Map();
 
-  async function fetchAlbumInfo(artist, albumName) {
-    const key = `${artist.toLowerCase()}|${albumName.toLowerCase()}`;
+  async function fetchAlbumInfo(artist, albumName, username) {
+    const key = username
+      ? `${username.toLowerCase()}|${artist.toLowerCase()}|${albumName.toLowerCase()}`
+      : `${artist.toLowerCase()}|${albumName.toLowerCase()}`;
     if (albumDetailCache.has(key)) return albumDetailCache.get(key);
     try {
       const apiKey = "b914193d6c62aabcd83adf2b6c457a5f";
-      const url = `https://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${apiKey}&artist=${encodeURIComponent(artist)}&album=${encodeURIComponent(albumName)}&format=json`;
+      let url = `https://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=${apiKey}&artist=${encodeURIComponent(artist)}&album=${encodeURIComponent(albumName)}&format=json`;
+      if (username) {
+        url += `&username=${encodeURIComponent(username)}`;
+      }
       const res = await fetch(url);
       if (res.ok) {
         const data = await res.json();
@@ -176,7 +284,8 @@
       if (!trackList.length) return null;
 
       const apiKey = "b914193d6c62aabcd83adf2b6c457a5f";
-      const tracksToCheck = trackList.slice(0, 30);
+      // Check up to 15 tracks to keep response times fast and avoid API rate limiting
+      const tracksToCheck = trackList.slice(0, 15);
       const trackPromises = tracksToCheck.map(async (t) => {
         try {
           const tUrl = `https://ws.audioscrobbler.com/2.0/?method=track.getinfo&api_key=${apiKey}&artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(t.name)}&username=${encodeURIComponent(username)}&format=json`;
@@ -195,8 +304,11 @@
 
       results.sort((a, b) => b.playcount - a.playcount);
       const top = results[0];
-      userFavTrackCache.set(key, top);
-      return top;
+      if (top && top.playcount > 0) {
+        userFavTrackCache.set(key, top);
+        return top;
+      }
+      return null;
     } catch (err) {
       console.warn("Could not determine user favorite track:", err);
       return null;
@@ -252,7 +364,7 @@
       ? `
         <div class="album-modal-stats stats-user-mode">
           <div class="album-modal-stat-box box-scrobbles">
-            <div class="album-modal-stat-label">Total Scrobbles</div>
+            <div class="album-modal-stat-label">${album.user}'s Scrobbles</div>
             <div class="album-modal-stat-value">${playcountStr}</div>
           </div>
           <div class="album-modal-stat-box box-fav-track">
@@ -280,6 +392,13 @@
         </div>
       `;
 
+    const userLastFmUrl = album.user
+      ? `https://www.last.fm/user/${encodeURIComponent(album.user)}/library/music/${encodeURIComponent(artistName)}/${encodeURIComponent(albumName)}`
+      : `https://www.last.fm/music/${encodeURIComponent(artistName)}/${encodeURIComponent(albumName)}`;
+    const userLastFmText = album.user
+      ? `View on ${album.user}'s Last.fm &rarr;`
+      : "View on Last.fm &rarr;";
+
     content.innerHTML = `
       <div class="album-modal-header">
         <img class="album-modal-img" src="${imgUrl}" alt="${albumName}" />
@@ -296,15 +415,25 @@
       <div class="album-modal-wiki-title">About this album</div>
       <div class="album-modal-wiki" id="modal-wiki">Fetching description from Last.fm...</div>
       <div class="album-modal-footer">
-        <a class="album-modal-lastfm-link" id="modal-lastfm-link" href="https://www.last.fm/music/${encodeURIComponent(artistName)}/${encodeURIComponent(albumName)}" target="_blank" rel="noopener">
-          View on Last.fm &rarr;
+        <a class="album-modal-lastfm-link" id="modal-lastfm-link" href="${userLastFmUrl}" target="_blank" rel="noopener">
+          ${userLastFmText}
         </a>
       </div>
     `;
 
     modal.classList.add("active");
 
-    fetchAlbumInfo(artistName, albumName).then((info) => {
+    if (isGifImage(imgUrl)) {
+      resolveStillAlbumImage(artistName, albumName, imgUrl).then((still) => {
+        if (still && still !== imgUrl) {
+          const mImg = content.querySelector(".album-modal-img");
+          if (mImg) mImg.src = still;
+          album.image = still;
+        }
+      });
+    }
+
+    fetchAlbumInfo(artistName, albumName, album.user).then((info) => {
       if (!modal.classList.contains("active")) return;
       const listenersEl = document.getElementById("modal-listeners");
       const ratioEl = document.getElementById("modal-ratio");
@@ -317,7 +446,7 @@
           if (!modal.classList.contains("active")) return;
           const favEl = document.getElementById("modal-fav-track");
           if (!favEl) return;
-          if (fav && fav.name) {
+          if (fav && fav.name && fav.playcount > 0) {
             favEl.setAttribute("title", `${fav.name} (${fav.playcount.toLocaleString()} plays)`);
             favEl.innerHTML = `
               <span class="fav-track-name">${fav.name}</span>
@@ -358,7 +487,7 @@
         } else if (wikiEl) {
           wikiEl.textContent = "No description available on Last.fm for this album.";
         }
-        if (info.url && linkEl) {
+        if (info.url && linkEl && !album.user) {
           linkEl.href = info.url;
         }
       } else {
@@ -388,6 +517,20 @@
     let spawnTimer = null;
     let focusedItem = null;
     let targetCount = Math.max(5, initialTargetCount);
+
+    // Each simulation owns its own instancePhysics
+    // Home tab ALWAYS uses defaultPhysics; scrobbles tab uses customizable scrobblesPhysics
+    let instancePhysics = Object.assign(
+      {},
+      tabName === "scrobbles" ? getScrobblesPhysics() : defaultPhysics
+    );
+
+    const nodeSize = 54;
+    const getNodeGravity = (d) => {
+      const dyn = instancePhysics.gravityDynamics !== undefined ? instancePhysics.gravityDynamics : 1.0;
+      const scale = d?.size ? Math.pow(d.size / nodeSize, 2.8 * dyn) : 1;
+      return instancePhysics.gravity * scale;
+    };
 
     mountElement.innerHTML = `
       <div class="simulation-chart-container" style="position: relative; width: 100%; height: 100vh; min-height: 500px; margin: 0 auto; user-select: none; overflow: hidden; display: block;">
@@ -441,7 +584,7 @@
       const sqrtP = Math.sqrt(Math.max(0, p));
       const ratio = (maxSqrt - minSqrt > 0) ? (sqrtP - minSqrt) / (maxSqrt - minSqrt) : 0.5;
       const midSize = 54;
-      const dyn = (currentPhysics.sizeScale !== undefined) ? currentPhysics.sizeScale : 1.0;
+      const dyn = (instancePhysics.sizeScale !== undefined) ? instancePhysics.sizeScale : 1.0;
       const diff = (Math.pow(ratio, 1.15) * 70 - 28) * dyn;
       return Math.max(16, Math.min(130, Math.round(midSize + diff)));
     }
@@ -498,7 +641,7 @@
       .force("center", d3.forceCenter(width / 2, centerY))
       .force("x", d3.forceX(width / 2).strength(getNodeGravity))
       .force("y", d3.forceY(centerY).strength(getNodeGravity))
-      .force("charge", d3.forceManyBody().strength(currentPhysics.attraction).distanceMax(140))
+      .force("charge", d3.forceManyBody().strength(instancePhysics.attraction).distanceMax(140))
       .force("collide", d3.forceCollide().radius((d) => d.radius).strength(0.8).iterations(3))
       .on("tick", () => {
         for (let i = 0; i < nodes.length; i++) {
@@ -509,7 +652,7 @@
             const dy = b.y - a.y;
             const absX = Math.abs(dx);
             const absY = Math.abs(dy);
-            const s = (a.size + b.size) / 2 + currentPhysics.minDistance;
+            const s = (a.size + b.size) / 2 + instancePhysics.minDistance;
             if (absX < s && absY < s) {
               const ox = s - absX;
               const oy = s - absY;
@@ -556,11 +699,26 @@
           deactivateFocus(focusedItem.node, focusedItem.el);
         }
       });
+      backdropOverlay.addEventListener("mouseenter", () => {
+        if (focusedItem) {
+          deactivateFocus(focusedItem.node, focusedItem.el);
+        }
+      });
     }
+
+    container.addEventListener("mouseleave", () => {
+      if (focusedItem) {
+        deactivateFocus(focusedItem.node, focusedItem.el);
+      }
+    });
 
     function activateFocus(node, nodeEl, album) {
       if (focusedItem) deactivateFocus(focusedItem.node, focusedItem.el);
       focusedItem = { node, el: nodeEl, album };
+      // Pin node position so it does not drift under cursor while reading/clicking
+      node.fx = node.x;
+      node.fy = node.y;
+
       if (backdropOverlay) {
         backdropOverlay.style.opacity = "1";
         backdropOverlay.style.pointerEvents = "auto";
@@ -591,20 +749,33 @@
         <div style="font-size: 0.76rem; color: #adb5bd; text-shadow: 0 2px 8px rgba(0,0,0,0.95);">${rankSubtext}</div>
         <div class="album-focus-hint">click to view album info &rarr;</div>
       `;
+      info.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openAlbumModal(album);
+        deactivateFocus(node, nodeEl);
+      });
       nodeEl.appendChild(info);
     }
 
     function deactivateFocus(node, nodeEl) {
-      if (focusedItem && focusedItem.el === nodeEl) {
+      if (focusedItem && (focusedItem.el === nodeEl || focusedItem.node === node || !nodeEl)) {
         focusedItem = null;
+      }
+      // Release pinned position safely
+      if (node && !node.__isDragging) {
+        node.fx = null;
+        node.fy = null;
       }
       if (backdropOverlay) {
         backdropOverlay.style.opacity = "0";
         backdropOverlay.style.pointerEvents = "none";
+        backdropOverlay.style.cursor = "default";
       }
-      nodeEl.classList.remove("album-focused");
-      const info = nodeEl.querySelector(".album-focus-info");
-      if (info) info.remove();
+      if (nodeEl) {
+        nodeEl.classList.remove("album-focused");
+        const info = nodeEl.querySelector(".album-focus-info");
+        if (info) info.remove();
+      }
     }
 
     function removeNode(node) {
@@ -637,7 +808,7 @@
       const node = {
         id: nodes.length + Math.random(),
         size: size,
-        radius: (size * 0.5) + (currentPhysics.minDistance * 0.5),
+        radius: (size * 0.5) + (instancePhysics.minDistance * 0.5),
         album: album,
         x: width / 2 + Math.cos(angle) * dist,
         y: centerY + Math.sin(angle) * dist,
@@ -686,6 +857,7 @@
       let isDragging = false;
       let dragMoved = false;
 
+      node.__isDragging = false;
       nodeEl.__albumData = album;
 
       nodeEl.addEventListener("mouseenter", () => {
@@ -694,12 +866,16 @@
           clearTimeout(leaveTimeout);
           leaveTimeout = null;
         }
+        // If another album is currently focused, dismiss it immediately
+        if (focusedItem && focusedItem.el !== nodeEl) {
+          deactivateFocus(focusedItem.node, focusedItem.el);
+        }
         if (!nodeEl.classList.contains("album-focused") && !isDragging) {
           hoverTimeout = setTimeout(() => {
             if (isHovering && !isDragging) {
               activateFocus(node, nodeEl, album);
             }
-          }, 380);
+          }, 320);
         }
       });
 
@@ -714,24 +890,25 @@
             if (!isHovering && nodeEl.classList.contains("album-focused")) {
               deactivateFocus(node, nodeEl);
             }
-          }, 350);
+          }, 220);
         }
       });
 
       d3.select(nodeEl).call(
         d3.drag()
-          .filter((event) => {
-            if (nodeEl.classList.contains("album-focused")) {
-              return false;
-            }
-            return !event.ctrlKey && !event.button;
-          })
+          .filter((event) => !event.ctrlKey && !event.button)
           .on("start", (event) => {
             isDragging = true;
+            node.__isDragging = true;
+            isHovering = false;
             dragMoved = false;
             if (hoverTimeout) {
               clearTimeout(hoverTimeout);
               hoverTimeout = null;
+            }
+            if (leaveTimeout) {
+              clearTimeout(leaveTimeout);
+              leaveTimeout = null;
             }
             if (nodeEl.classList.contains("album-focused")) {
               deactivateFocus(node, nodeEl);
@@ -743,7 +920,7 @@
             nodeEl.style.zIndex = "50";
           })
           .on("drag", (event) => {
-            if (Math.abs(event.dx) > 1 || Math.abs(event.dy) > 1) {
+            if (Math.abs(event.dx) > 3 || Math.abs(event.dy) > 3) {
               dragMoved = true;
             }
             node.fx = event.x;
@@ -751,9 +928,12 @@
           })
           .on("end", (event) => {
             isDragging = false;
+            node.__isDragging = false;
             if (!event.active) simulation.alphaTarget(0);
-            node.fx = null;
-            node.fy = null;
+            if (!nodeEl.classList.contains("album-focused")) {
+              node.fx = null;
+              node.fy = null;
+            }
             nodeEl.style.cursor = "grab";
             nodeEl.style.zIndex = "";
           })
@@ -761,9 +941,9 @@
 
       nodeEl.addEventListener("click", (e) => {
         if (dragMoved) return;
+        e.stopPropagation();
+        openAlbumModal(album);
         if (nodeEl.classList.contains("album-focused")) {
-          e.stopPropagation();
-          openAlbumModal(album);
           deactivateFocus(node, nodeEl);
         }
       });
@@ -835,33 +1015,33 @@
     // Start initial spawn sequence
     spawnLoop();
 
-    // Listen to physics adjustments from settings
+    // Listen to physics adjustments from settings ONLY for scrobbles tab
     const onPhysicsChange = (e) => {
-      const p = e?.detail || window.__chartPhysics;
+      if (tabName !== "scrobbles") return;
+      const p = e?.detail?.physics || e?.detail || window.__scrobblesPhysics;
       if (!p || !simulation) return;
-      const oldScale = currentPhysics.sizeScale || 1.0;
-      currentPhysics = Object.assign({}, p);
-      const newScale = currentPhysics.sizeScale || 1.0;
+      instancePhysics = Object.assign({}, p);
 
-      const sizeChanged = Math.abs(newScale - oldScale) > 0.005;
       for (const d of nodes) {
-        if (sizeChanged) {
-          d.size = getAlbumSize(d.album);
-          if (d.el) {
-            d.el.style.width = `${d.size}px`;
-            d.el.style.height = `${d.size}px`;
-          }
+        d.size = getAlbumSize(d.album);
+        if (d.el) {
+          d.el.style.width = `${d.size}px`;
+          d.el.style.height = `${d.size}px`;
+          const half = d.size / 2;
+          d.el.style.transform = `translate(${d.x - half}px, ${d.y - half}px)`;
         }
-        d.radius = (d.size * 0.5) + (currentPhysics.minDistance * 0.5);
+        d.radius = (d.size * 0.5) + (instancePhysics.minDistance * 0.5);
       }
-      simulation.force("charge", d3.forceManyBody().strength(currentPhysics.attraction).distanceMax(140));
+      simulation.force("charge", d3.forceManyBody().strength(instancePhysics.attraction).distanceMax(140));
       simulation.force("collide", d3.forceCollide().radius((d) => d.radius).strength(0.8).iterations(3));
       simulation.force("x", d3.forceX(width / 2).strength(getNodeGravity));
       simulation.force("y", d3.forceY(centerY).strength(getNodeGravity));
       simulation.alpha(0.35).restart();
     };
 
-    window.addEventListener("chartfm-physics-change", onPhysicsChange);
+    if (tabName === "scrobbles") {
+      window.addEventListener("chartfm-physics-change", onPhysicsChange);
+    }
 
     function destroy() {
       cancelled = true;
@@ -874,7 +1054,9 @@
         simulation = null;
       }
       window.removeEventListener("resize", updateDimensions);
-      window.removeEventListener("chartfm-physics-change", onPhysicsChange);
+      if (tabName === "scrobbles") {
+        window.removeEventListener("chartfm-physics-change", onPhysicsChange);
+      }
     }
 
     return {
@@ -1220,9 +1402,12 @@
     }
 
     chartContainer.innerHTML = `
-      <div style="position: relative; width: 100%; height: 100vh; min-height: 500px; display: flex; align-items: center; justify-content: center;">
-        <div class="chart-loading-indicator" style="color: #888; font-style: italic; font-size: 0.88rem; letter-spacing: 0.5px; pointer-events: none; user-select: none;">
-          loading<span class="loading-dot-1">.</span><span class="loading-dot-2">.</span><span class="loading-dot-3">.</span>
+      <div style="position: relative; width: 100%; height: 100vh; min-height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+        <div class="chart-loading-indicator" style="color: #a1a1aa; font-style: italic; font-size: 0.9rem; letter-spacing: 0.5px; pointer-events: none; user-select: none;">
+          loading top albums<span class="loading-dot-1">.</span><span class="loading-dot-2">.</span><span class="loading-dot-3">.</span>
+        </div>
+        <div id="home-covers-progress" style="font-size: 0.8rem; color: #71717a; font-variant-numeric: tabular-nums;">
+          0 / 50
         </div>
       </div>
     `;
@@ -1235,9 +1420,14 @@
 
     const initialCount = (window.__chartCounts && window.__chartCounts.home !== undefined) ? window.__chartCounts.home : 50;
 
+    const homeProgressEl = chartContainer.querySelector("#home-covers-progress");
+    const verifiedAlbums = await preloadAlbumCovers(albums, initialCount, (loaded, target) => {
+      if (homeProgressEl) homeProgressEl.textContent = `${loaded} / ${target}`;
+    });
+
     homeInstance = createAlbumSimulation({
       mountElement: chartContainer,
-      albums: albums,
+      albums: verifiedAlbums,
       titleText: "Last.fm's Top 50 Albums",
       subtitleText: "hover over an album for info, click on it to view more",
       initialTargetCount: initialCount,
@@ -1260,9 +1450,9 @@
     }
 
     mountElement.innerHTML = `
-      <div style="position: relative; width: 100%; height: 100vh; min-height: 500px; display: flex; align-items: center; justify-content: center;">
-        <div class="chart-loading-indicator" style="color: #888; font-style: italic; font-size: 0.88rem; letter-spacing: 0.5px; pointer-events: none; user-select: none;">
-          loading ${username}'s top albums<span class="loading-dot-1">.</span><span class="loading-dot-2">.</span><span class="loading-dot-3">.</span>
+      <div style="position: relative; width: 100%; height: 100vh; min-height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+        <div class="chart-loading-indicator" style="color: #a1a1aa; font-style: italic; font-size: 0.9rem; letter-spacing: 0.5px; pointer-events: none; user-select: none;">
+          fetching ${username}'s scrobbles<span class="loading-dot-1">.</span><span class="loading-dot-2">.</span><span class="loading-dot-3">.</span>
         </div>
       </div>
     `;
@@ -1273,10 +1463,29 @@
     }
 
     const initialCount = (window.__chartCounts && window.__chartCounts.scrobbles !== undefined) ? window.__chartCounts.scrobbles : 50;
+    // Preload up to 100 candidate album covers so all 100 are ready before starting the simulation
+    const preloadTarget = Math.min(100, albums.length);
+
+    // Loading screen to preload all album covers before simulation pops in
+    mountElement.innerHTML = `
+      <div style="position: relative; width: 100%; height: 100vh; min-height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+        <div class="chart-loading-indicator" style="color: #a1a1aa; font-style: italic; font-size: 0.9rem; letter-spacing: 0.5px; pointer-events: none; user-select: none;">
+          loading ${username}'s album covers<span class="loading-dot-1">.</span><span class="loading-dot-2">.</span><span class="loading-dot-3">.</span>
+        </div>
+        <div id="user-covers-progress" style="font-size: 0.8rem; color: #71717a; font-variant-numeric: tabular-nums;">
+          0 / ${preloadTarget}
+        </div>
+      </div>
+    `;
+
+    const progressEl = mountElement.querySelector("#user-covers-progress");
+    const verifiedAlbums = await preloadAlbumCovers(albums, preloadTarget, (loaded, target) => {
+      if (progressEl) progressEl.textContent = `${loaded} / ${target}`;
+    });
 
     userInstance = createAlbumSimulation({
       mountElement: mountElement,
-      albums: albums,
+      albums: verifiedAlbums,
       titleText: `${username.toLowerCase()}'s most scrobbled albums`,
       subtitleText: "hover over an album for info, click on it to view more",
       initialTargetCount: initialCount,
