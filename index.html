@@ -96,11 +96,11 @@ ul.task-list li input[type="checkbox"] {
 <button id="nav-home" class="floating-nav-item active" type="button">
 Home
 </button>
+<button id="nav-explore" class="floating-nav-item" type="button">
+Explore Genres
+</button>
 <button id="nav-scrobbles" class="floating-nav-item" type="button">
 View My Scrobbles
-</button>
-<button id="nav-explore" class="floating-nav-item" type="button">
-Explore
 </button>
 <button id="nav-about" class="floating-nav-item" type="button">
 About
@@ -151,12 +151,10 @@ About
   </div>
 </section>
 
-<section class="genre-network-section">
-  <div class="genre-network-header">
-    <div class="simulation-title">Genre Folksonomy Network</div>
-    <div class="simulation-subtitle">interactive tag connections · drag nodes to explore · zoom to reveal subgenres</div>
-  </div>
-  <div id="genre-network-container" class="genre-network-container"></div>
+<section class="home-explore-section">
+  <a href="#explore" class="home-explore-link">
+    Explore Genres <span class="home-explore-arrow">→</span>
+  </a>
 </section>
 </div>
 <div id="scrobbles-tab-view" class="tab-view" style="display: none; width: 100%;">
@@ -180,8 +178,65 @@ About
   <div id="scrobbles-chart-container" style="display: none; width: 100%;"></div>
 </div>
 
-<div id="explore-tab-view" class="tab-view" style="display: none; width: 100%;"></div>
-<div id="about-tab-view" class="tab-view" style="display: none; width: 100%;"></div>
+<div id="explore-tab-view" class="tab-view" style="display: none; width: 100%;">
+  <section class="genre-network-section">
+    <div class="genre-network-header">
+      <div class="simulation-title">Genre Folksonomy Network</div>
+      <div class="simulation-subtitle">interactive tag connections · drag nodes to explore · zoom to reveal subgenres · click on a genre to view more</div>
+    </div>
+    <div id="genre-network-container" class="genre-network-container"></div>
+  </section>
+
+  <div class="random-genre-section">
+    <h3 class="random-genre-header anchored">Or...</h3>
+    <button id="random-genre-btn" class="random-genre-btn" type="button">Give me a random genre</button>
+    <div class="genre-search-wrap">
+      <div class="genre-search-pill">
+        <svg class="genre-search-icon" viewbox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="8.5" cy="8.5" r="5.5"></circle>
+          <path d="M12.5 12.5L16.5 16.5"></path>
+        </svg>
+        <div class="genre-search-field">
+          <div id="genre-search-ghost" class="genre-search-ghost" aria-hidden="true"></div>
+          <input id="genre-search-input" class="genre-search-input" type="text" placeholder="Search for a genre" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="genre-detail-section" class="genre-detail-section" style="display: none;">
+    <div class="genre-detail-container">
+      <div class="genre-detail-left">
+        <div id="genre-detail-tag-badge" class="genre-detail-tag-badge"></div>
+        <h2 id="genre-detail-title" class="genre-detail-title anchored"></h2>
+        <div id="genre-detail-meta" class="genre-detail-meta"></div>
+        <div id="genre-detail-description" class="genre-detail-description"></div>
+        <a id="genre-detail-lastfm-link" class="genre-detail-lastfm-link" href="#" target="_blank" rel="noopener noreferrer">
+          View tag on Last.fm →
+        </a>
+      </div>
+
+      <div class="genre-detail-right">
+        <div class="genre-detail-sim-card">
+          <div id="genre-detail-sim-container" class="genre-detail-sim-container"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<div id="about-tab-view" class="tab-view" style="display: none; width: 100%;">
+  <div style="min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center;">
+    <p style="font-size: clamp(0.95rem, 2vw, 1.25rem); color: #e4e4e7; margin: 0; white-space: nowrap;">
+      This website was made by Mia Barbosa with the help of <a href="https://antigravity.google" target="_blank" rel="noopener noreferrer" style="text-decoration: underline; text-underline-offset: 3px;">Google Antigravity</a>
+    </p>
+    <div style="font-size: 0.95rem; line-height: 1.8; color: #a1a1aa; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; margin-top: 1.25rem;">
+      <div><a href="mailto:m.barbosa30@ncf.edu" style="text-decoration: underline; text-underline-offset: 3px;">m.barbosa30@ncf.edu</a></div>
+      <div><a href="https://github.com/synchronizedswimmer" target="_blank" rel="noopener noreferrer" style="text-decoration: underline; text-underline-offset: 3px;">GitHub Account</a></div>
+      <div><a href="https://github.com/synchronizedswimmer/chart-fm" target="_blank" rel="noopener noreferrer" style="text-decoration: underline; text-underline-offset: 3px;">GitHub Repository</a></div>
+      <div><a href="https://www.ncf.edu" target="_blank" rel="noopener noreferrer" style="text-decoration: underline; text-underline-offset: 3px;">New College of Florida</a></div>
+    </div>
+  </div>
+</div>
 
 <!-- Floating bottom settings tab (gear icon) -->
 <div id="settings-dock" class="settings-dock" style="display: none;">
@@ -212,6 +267,17 @@ About
       <button class="settings-btn" type="submit">load</button>
     </form>
     <div id="settings-user-status" style="font-size: 0.72rem; color: #a1a1aa; margin-top: 4px;"></div>
+  </div>
+
+  <!-- Sorting section (only visible on view my scrobbles tab) -->
+  <div id="settings-sort-group" class="settings-group" style="display: none;">
+    <div class="settings-group-label">
+      <span>Sort by:</span>
+    </div>
+    <div class="settings-btn-group">
+      <button id="sort-color-btn" class="settings-btn" type="button">color</button>
+      <button id="sort-scrobbles-btn" class="settings-btn active" type="button">scrobbles</button>
+    </div>
   </div>
 
   <!-- Dynamics controls (on both tabs) -->
@@ -275,6 +341,7 @@ About
   let isScrobblesSimulationLoaded = false;
 
   function showTab(tabName) {
+    window.scrollTo(0, 0);
     currentTab = tabName;
     const views = {
       home: document.getElementById("home-tab-view"),
@@ -289,6 +356,7 @@ About
       about: document.getElementById("nav-about")
     };
     const settingsUserGroup = document.getElementById("settings-user-group");
+    const settingsSortGroup = document.getElementById("settings-sort-group");
     const settingsDock = document.getElementById("settings-dock");
     const settingsPanel = document.getElementById("settings-panel");
     const settingsBackdrop = document.getElementById("settings-backdrop");
@@ -304,15 +372,19 @@ About
 
     if (tabName === "scrobbles") {
       if (settingsUserGroup) settingsUserGroup.style.display = isScrobblesSimulationLoaded ? "block" : "none";
+      if (settingsSortGroup) settingsSortGroup.style.display = isScrobblesSimulationLoaded ? "block" : "none";
       if (settingsDock) settingsDock.style.display = isScrobblesSimulationLoaded ? "flex" : "none";
       window.refreshScrobblesChartDimensions?.();
     } else {
       if (settingsUserGroup) settingsUserGroup.style.display = "none";
+      if (settingsSortGroup) settingsSortGroup.style.display = "none";
       if (settingsDock) settingsDock.style.display = "none";
       settingsPanel?.classList.remove("open");
       settingsBackdrop?.classList.remove("open");
       if (tabName === "home") {
         window.refreshHomeChartDimensions?.();
+      } else if (tabName === "explore") {
+        window.dispatchEvent(new Event("resize"));
       }
     }
 
@@ -329,6 +401,7 @@ About
     const navScrobbles = document.getElementById("nav-scrobbles");
     const navExplore = document.getElementById("nav-explore");
     const navAbout = document.getElementById("nav-about");
+    const homeExploreLink = document.querySelector(".home-explore-link");
 
     navHome?.addEventListener("click", () => {
       window.location.hash = "home";
@@ -344,6 +417,12 @@ About
 
     navAbout?.addEventListener("click", () => {
       window.location.hash = "about";
+    });
+
+    homeExploreLink?.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.hash = "explore";
+      showTab("explore");
     });
 
     window.addEventListener("hashchange", () => {
@@ -408,7 +487,9 @@ About
     let scrobblesPhysics = Object.assign({}, defaultPhysics);
     try {
       const saved = JSON.parse(localStorage.getItem("chartfm_scrobbles_physics") || "null");
-      if (saved) scrobblesPhysics = Object.assign({}, defaultPhysics, saved);
+      if (saved && Number(saved.sizeScale) > 0) {
+        scrobblesPhysics = Object.assign({}, defaultPhysics, saved);
+      }
     } catch (e) {}
 
     window.__scrobblesPhysics = Object.assign({}, scrobblesPhysics);
@@ -452,7 +533,9 @@ About
     function emitPhysicsChange() {
       window.__scrobblesPhysics = Object.assign({}, scrobblesPhysics);
       try {
-        localStorage.setItem("chartfm_scrobbles_physics", JSON.stringify(scrobblesPhysics));
+        if (scrobblesPhysics.sizeScale > 0) {
+          localStorage.setItem("chartfm_scrobbles_physics", JSON.stringify(scrobblesPhysics));
+        }
       } catch (e) {}
       window.dispatchEvent(new CustomEvent("chartfm-physics-change", { detail: { tab: "scrobbles", physics: scrobblesPhysics } }));
     }
@@ -503,18 +586,55 @@ About
       emitPhysicsChange();
     });
 
+    const sortColorBtn = document.getElementById("sort-color-btn");
+    const sortScrobblesBtn = document.getElementById("sort-scrobbles-btn");
+    let currentSortMode = "scrobbles";
+
+    sortColorBtn?.addEventListener("click", () => {
+      currentSortMode = "color";
+      sortColorBtn.classList.add("active");
+      sortScrobblesBtn?.classList.remove("active");
+
+      scrobblesPhysics.sizeScale = 0.25;
+      scrobblesPhysics.attraction = -15;
+
+      syncControls();
+      window.__scrobblesPhysics = Object.assign({}, scrobblesPhysics);
+      window.dispatchEvent(new CustomEvent("chartfm-physics-change", { detail: { tab: "scrobbles", physics: scrobblesPhysics } }));
+      window.dispatchEvent(new CustomEvent("chartfm-sort-change", { detail: { mode: "color" } }));
+    });
+
+    sortScrobblesBtn?.addEventListener("click", () => {
+      currentSortMode = "scrobbles";
+      sortScrobblesBtn.classList.add("active");
+      sortColorBtn?.classList.remove("active");
+
+      scrobblesPhysics = Object.assign({}, defaultPhysics);
+      try {
+        localStorage.removeItem("chartfm_scrobbles_physics");
+      } catch (e) {}
+
+      syncControls();
+      emitPhysicsChange();
+      window.dispatchEvent(new CustomEvent("chartfm-sort-change", { detail: { mode: "scrobbles" } }));
+    });
+
     resetBtn?.addEventListener("click", () => {
+      currentSortMode = "scrobbles";
+      sortScrobblesBtn?.classList.add("active");
+      sortColorBtn?.classList.remove("active");
       scrobblesPhysics = Object.assign({}, defaultPhysics);
       currentCounts.scrobbles = defaultCounts.scrobbles;
       window.__chartCounts = Object.assign({}, currentCounts);
       window.__scrobblesPhysics = Object.assign({}, scrobblesPhysics);
       try {
-        localStorage.setItem("chartfm_scrobbles_physics", JSON.stringify(scrobblesPhysics));
+        localStorage.removeItem("chartfm_scrobbles_physics");
         localStorage.setItem("chartfm_counts", JSON.stringify(currentCounts));
       } catch (e) {}
       syncControls();
       emitPhysicsChange();
       window.dispatchEvent(new CustomEvent("chartfm-count-change", { detail: { tab: "scrobbles", count: currentCounts.scrobbles } }));
+      window.dispatchEvent(new CustomEvent("chartfm-sort-change", { detail: { mode: "scrobbles" } }));
     });
 
     // --- User Scrobbles Lookup ---
@@ -529,9 +649,22 @@ About
     const chartContainer = document.getElementById("scrobbles-chart-container");
     const settingsDock = document.getElementById("settings-dock");
     const settingsUserGroup = document.getElementById("settings-user-group");
+    const settingsSortGroup = document.getElementById("settings-sort-group");
 
     async function loadUserScrobbles(username) {
       if (!username) return;
+
+      // Always initialize with default scrobbles sorting and default physics
+      currentSortMode = "scrobbles";
+      sortScrobblesBtn?.classList.add("active");
+      sortColorBtn?.classList.remove("active");
+      scrobblesPhysics = Object.assign({}, defaultPhysics);
+      window.__scrobblesPhysics = Object.assign({}, defaultPhysics);
+      try {
+        localStorage.removeItem("chartfm_scrobbles_physics");
+      } catch (e) {}
+      syncControls();
+
       if (settingsDock) settingsDock.style.display = "none";
       if (settingsUserStatus) settingsUserStatus.textContent = `loading ${username}...`;
 
@@ -540,7 +673,7 @@ About
         if (chartContainer) {
           chartContainer.style.display = "block";
           chartContainer.innerHTML = `
-            <div style="position: relative; width: 100%; height: 100vh; min-height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+            <div style="position: relative; width: 100%; height: 100vh; max-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
               <div class="chart-loading-indicator" style="color: #a1a1aa; font-style: italic; font-size: 0.9rem; letter-spacing: 0.5px; pointer-events: none; user-select: none;">
                 fetching ${username}'s scrobbles<span class="loading-dot-1">.</span><span class="loading-dot-2">.</span><span class="loading-dot-3">.</span>
               </div>
@@ -553,6 +686,7 @@ About
           settingsDock.style.display = "flex";
         }
         if (settingsUserGroup) settingsUserGroup.style.display = "block";
+        if (settingsSortGroup) settingsSortGroup.style.display = "block";
         if (settingsUserInput) settingsUserInput.value = username;
         if (settingsUserStatus) settingsUserStatus.textContent = "";
         if (lastfmStatus) lastfmStatus.textContent = "";

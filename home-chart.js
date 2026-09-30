@@ -3,29 +3,122 @@
   const defaultPhysics = { attraction: -15, minDistance: 2, gravity: 0.07, sizeScale: 1.0, gravityDynamics: 1.0 };
 
   function getScrobblesPhysics() {
-    if (window.__scrobblesPhysics) return window.__scrobblesPhysics;
-    try {
-      const saved = JSON.parse(localStorage.getItem("chartfm_scrobbles_physics") || "null");
-      if (saved) return Object.assign({}, defaultPhysics, saved);
-    } catch (e) {}
-    return defaultPhysics;
+    if (window.__scrobblesPhysics && Number(window.__scrobblesPhysics.sizeScale) > 0) {
+      return Object.assign({}, defaultPhysics, window.__scrobblesPhysics);
+    }
+    return Object.assign({}, defaultPhysics);
+  }
+
+  function isValidCoverUrl(url) {
+    if (!url || typeof url !== "string") return false;
+    const u = url.trim();
+    if (!u) return false;
+    if (u.includes("2a96cbd8b46e442fc41c2b86b821562f") ||
+        u.includes("4128a6012f5249679470c0e7197799b3") ||
+        u.includes("noimage") ||
+        u.includes("default_album") ||
+        u.includes("placeholder") ||
+        u.endsWith("/avatar170s/") ||
+        u.endsWith(".gif")) {
+      return false;
+    }
+    return true;
+  }
+
+  function getAlbumKey(alb) {
+    if (!alb) return "";
+    const art = typeof alb.artist === "object" ? (alb.artist.name || "") : (alb.artist || "");
+    return `${art.toLowerCase().trim()}||${(alb.name || "").toLowerCase().trim()}`;
   }
 
   function preloadImage(url) {
     return new Promise((resolve) => {
-      if (!url) return resolve(false);
+      if (!isValidCoverUrl(url)) return resolve(false);
       const img = new Image();
       let done = false;
-      img.onload = () => { if (!done) { done = true; resolve(true); } };
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        if (!done) {
+          done = true;
+          resolve(img.naturalWidth > 1 && img.naturalHeight > 1);
+        }
+      };
       img.onerror = () => { if (!done) { done = true; resolve(false); } };
       setTimeout(() => { if (!done) { done = true; resolve(false); } }, 3500);
       img.referrerPolicy = "no-referrer";
-      img.src = url;
+      img.src = url.trim();
       if (img.complete && img.naturalWidth > 0) {
         done = true;
-        resolve(true);
+        resolve(img.naturalWidth > 1 && img.naturalHeight > 1);
       }
     });
+  }
+
+  // --- Album Cover Color Extraction Cache & Helpers ---
+  const albumColorCache = new Map();
+
+  function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0, l = (max + min) / 2;
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+    return { h: Math.round(h * 360), s, l };
+  }
+
+  function getFallbackHsl(key) {
+    let hash = 0;
+    const str = String(key || "");
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash << 5) - hash + str.charCodeAt(i);
+      hash |= 0;
+    }
+    const h = Math.abs(hash) % 360;
+    return { h, s: 0.65, l: 0.5 };
+  }
+
+  function extractColorFromImg(img, fallbackKey) {
+    if (!img) return getFallbackHsl(fallbackKey);
+    const key = img.src || fallbackKey;
+    if (albumColorCache.has(key)) {
+      return albumColorCache.get(key);
+    }
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = 16;
+      canvas.height = 16;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, 16, 16);
+      const data = ctx.getImageData(0, 0, 16, 16).data;
+      let totalWeight = 0, rSum = 0, gSum = 0, bSum = 0;
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] < 128) continue;
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        const sat = max === 0 ? 0 : (max - min) / max;
+        const weight = 0.1 + Math.pow(sat, 1.5) * 3;
+        rSum += r * weight;
+        gSum += g * weight;
+        bSum += b * weight;
+        totalWeight += weight;
+      }
+      if (totalWeight > 0) {
+        const hsl = rgbToHsl(rSum / totalWeight, gSum / totalWeight, bSum / totalWeight);
+        albumColorCache.set(key, hsl);
+        return hsl;
+      }
+    } catch (e) {}
+    const fallback = getFallbackHsl(fallbackKey || key);
+    albumColorCache.set(key, fallback);
+    return fallback;
   }
 
   function isGifImage(url) {
@@ -99,6 +192,7 @@
   // Preload album covers with progress callback until targetCount verified albums are ready
   async function preloadAlbumCovers(albums, targetCount, onProgress) {
     const verified = [];
+    const failed = new Set();
     const remaining = albums.slice();
     const concurrency = 8;
     let nextIdx = 0;
@@ -106,16 +200,27 @@
     async function worker() {
       while (nextIdx < remaining.length && verified.length < targetCount) {
         const alb = remaining[nextIdx++];
-        if (!alb || !alb.image) continue;
+        if (!alb || !alb.image || !isValidCoverUrl(alb.image)) {
+          if (alb) failed.add(alb);
+          continue;
+        }
         if (isGifImage(alb.image)) {
           alb.image = await resolveStillAlbumImage(alb.artist, alb.name, alb.image);
         }
+        if (!isValidCoverUrl(alb.image)) {
+          failed.add(alb);
+          continue;
+        }
         const ok = await preloadImage(alb.image);
-        if (ok && verified.length < targetCount) {
-          verified.push(alb);
-          if (typeof onProgress === "function") {
-            onProgress(verified.length, targetCount);
+        if (ok) {
+          if (verified.length < targetCount) {
+            verified.push(alb);
+            if (typeof onProgress === "function") {
+              onProgress(verified.length, targetCount);
+            }
           }
+        } else {
+          failed.add(alb);
         }
       }
     }
@@ -124,7 +229,7 @@
     await Promise.all(Array.from({ length: workerCount }, () => worker()));
 
     const verifiedSet = new Set(verified);
-    const rest = remaining.filter((a) => !verifiedSet.has(a));
+    const rest = remaining.filter((a) => !verifiedSet.has(a) && !failed.has(a));
     return verified.concat(rest);
   }
 
@@ -524,8 +629,11 @@
       {},
       tabName === "scrobbles" ? getScrobblesPhysics() : defaultPhysics
     );
+    if (tabName === "scrobbles" && (instancePhysics.sizeScale == null || Number(instancePhysics.sizeScale) <= 0)) {
+      instancePhysics.sizeScale = 1.0;
+    }
 
-    const nodeSize = 54;
+    const nodeSize = 44;
     const getNodeGravity = (d) => {
       const dyn = instancePhysics.gravityDynamics !== undefined ? instancePhysics.gravityDynamics : 1.0;
       const scale = d?.size ? Math.pow(d.size / nodeSize, 2.8 * dyn) : 1;
@@ -533,7 +641,7 @@
     };
 
     mountElement.innerHTML = `
-      <div class="simulation-chart-container" style="position: relative; width: 100%; height: 100vh; min-height: 500px; margin: 0 auto; user-select: none; overflow: hidden; display: block;">
+      <div class="simulation-chart-container" style="position: relative; width: 100%; height: 100vh; max-height: 100vh; margin: 0 auto; user-select: none; overflow: hidden; display: block;">
         <div class="simulation-header">
           <div class="simulation-title">${titleText}</div>
           <div class="simulation-subtitle">${subtitleText}</div>
@@ -545,24 +653,37 @@
     const container = mountElement.querySelector(".simulation-chart-container");
     const backdropOverlay = container.querySelector(".chart-backdrop-overlay");
 
+    const headerOffset = tabName === "scrobbles" ? 20 : 50;
+    const computeHeight = () => Math.max(480, Math.floor(window.innerHeight));
     let width = Math.max(300, Math.floor(container.clientWidth || window.innerWidth));
-    let height = Math.max(500, Math.floor(window.innerHeight));
-    let centerY = (height + 120) / 2;
+    let height = computeHeight();
+    let centerY = (height + headerOffset) / 2;
     container.style.height = `${height}px`;
+
+    let currentSortMode = "scrobbles";
 
     function updateDimensions() {
       if (!container || !container.isConnected) return;
       if (container.offsetWidth === 0 && container.offsetHeight === 0) return;
       width = Math.max(300, Math.floor(container.clientWidth || window.innerWidth));
-      height = Math.max(500, Math.floor(window.innerHeight));
-      centerY = (height + 120) / 2;
+      height = computeHeight();
+      centerY = (height + headerOffset) / 2;
       container.style.height = `${height}px`;
 
       if (simulation) {
-        simulation
-          .force("center", d3.forceCenter(width / 2, centerY))
-          .force("x", d3.forceX(width / 2).strength(getNodeGravity))
-          .force("y", d3.forceY(centerY).strength(getNodeGravity));
+        if (currentSortMode === "color") {
+          updateColorTargets();
+          simulation
+            .force("colorX", d3.forceX((d) => d.colorTargetX !== undefined ? d.colorTargetX : (width / 2)).strength(0.42))
+            .force("colorY", d3.forceY((d) => d.colorTargetY !== undefined ? d.colorTargetY : centerY).strength(0.42))
+            .force("x", d3.forceX(width / 2).strength(0.05))
+            .force("y", d3.forceY(centerY).strength(0.05));
+        } else {
+          simulation
+            .force("center", d3.forceCenter(width / 2, centerY))
+            .force("x", d3.forceX(width / 2).strength(getNodeGravity))
+            .force("y", d3.forceY(centerY).strength(getNodeGravity));
+        }
         simulation.alpha(0.2).restart();
       }
     }
@@ -583,52 +704,62 @@
       const p = Number(alb.playcount) || 0;
       const sqrtP = Math.sqrt(Math.max(0, p));
       const ratio = (maxSqrt - minSqrt > 0) ? (sqrtP - minSqrt) / (maxSqrt - minSqrt) : 0.5;
-      const midSize = 54;
-      const dyn = (instancePhysics.sizeScale !== undefined) ? instancePhysics.sizeScale : 1.0;
-      const diff = (Math.pow(ratio, 1.15) * 70 - 28) * dyn;
-      return Math.max(16, Math.min(130, Math.round(midSize + diff)));
+      const midSize = nodeSize;
+      const defaultDyn = (currentSortMode === "color") ? 0.25 : 1.0;
+      const dyn = (instancePhysics.sizeScale !== undefined) ? instancePhysics.sizeScale : defaultDyn;
+      const diff = (Math.pow(ratio, 1.15) * 56 - 22) * dyn;
+      return Math.max(16, Math.min(105, Math.round(midSize + diff)));
     }
 
     const failedAlbumKeys = new Set();
     const prefetchedKeys = new Set();
     let candidateIndex = 0;
 
-    function getAlbumKey(alb) {
-      if (!alb) return "";
-      const art = typeof alb.artist === "object" ? (alb.artist.name || "") : (alb.artist || "");
-      return `${art.toLowerCase().trim()}||${(alb.name || "").toLowerCase().trim()}`;
-    }
-
     function isAlbumValid(alb) {
       if (!alb || !alb.image) return false;
-      const url = String(alb.image).trim();
-      if (!url) return false;
-      if (url.includes("2a96cbd8b46e442fc41c2b86b821562f") || url.includes("noimage")) return false;
+      if (!isValidCoverUrl(alb.image)) return false;
       if (failedAlbumKeys.has(getAlbumKey(alb))) return false;
       return true;
     }
 
     // Warm the browser image cache in the background for upcoming candidate albums
-    function prefetchCandidatesAhead(count = 25) {
-      for (let i = candidateIndex; i < candidateAlbums.length && i < candidateIndex + count; i++) {
+    function prefetchCandidatesAhead(count = 35) {
+      let prefetchedCount = 0;
+      for (let i = 0; i < candidateAlbums.length && prefetchedCount < count; i++) {
         const alb = candidateAlbums[i];
         if (isAlbumValid(alb)) {
           const key = getAlbumKey(alb);
           if (!prefetchedKeys.has(key)) {
             prefetchedKeys.add(key);
+            prefetchedCount++;
             const preload = new Image();
+            preload.crossOrigin = "anonymous";
             preload.referrerPolicy = "no-referrer";
+            preload.onload = () => {
+              if (!preload.naturalWidth || preload.naturalWidth <= 1 || !preload.naturalHeight || preload.naturalHeight <= 1) {
+                failedAlbumKeys.add(key);
+                return;
+              }
+              if (!albumColorCache.has(key)) {
+                extractColorFromImg(preload, key);
+              }
+            };
+            preload.onerror = () => {
+              failedAlbumKeys.add(key);
+            };
             preload.src = alb.image;
           }
         }
       }
     }
 
-    // Pick next candidate with a valid cover URL
+    // Pick next candidate with a valid cover URL not already displayed
     function getNextCandidate() {
-      while (candidateIndex < candidateAlbums.length) {
-        const alb = candidateAlbums[candidateIndex++];
-        if (isAlbumValid(alb)) {
+      const activeKeys = new Set(nodes.map((n) => getAlbumKey(n.album)));
+      for (let i = 0; i < candidateAlbums.length; i++) {
+        const alb = candidateAlbums[i];
+        const key = getAlbumKey(alb);
+        if (!activeKeys.has(key) && !failedAlbumKeys.has(key) && isAlbumValid(alb)) {
           return alb;
         }
       }
@@ -681,8 +812,8 @@
           }
         }
 
-        const pad = 8;
-        const topPad = 86;
+        const pad = 6;
+        const topPad = tabName === "scrobbles" ? 22 : 68;
         for (const d of nodes) {
           const half = d.size / 2;
           d.x = Math.max(half + pad, Math.min(width - half - pad, d.x));
@@ -778,7 +909,7 @@
       }
     }
 
-    function removeNode(node) {
+    function removeNode(node, immediate = false) {
       const idx = nodes.indexOf(node);
       if (idx !== -1) {
         nodes.splice(idx, 1);
@@ -787,65 +918,157 @@
         deactivateFocus(node, node.el);
       }
       if (node.el) {
-        node.el.style.transition = "transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease";
-        node.el.style.opacity = "0";
-        node.el.style.transform += " scale(0.15)";
-        setTimeout(() => {
-          if (node.el && node.el.parentNode) {
+        if (immediate) {
+          if (node.el.parentNode) {
             node.el.parentNode.removeChild(node.el);
           }
-        }, 280);
+        } else {
+          node.el.style.transition = "transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease";
+          node.el.style.opacity = "0";
+          node.el.style.transform += " scale(0.15)";
+          setTimeout(() => {
+            if (node.el && node.el.parentNode) {
+              node.el.parentNode.removeChild(node.el);
+            }
+          }, 280);
+        }
       }
+    }
+
+    function getNodeColorScore(node) {
+      const c = node?.colorInfo || { h: 0, s: 0, l: 0.5 };
+      const s = Math.max(0, Math.min(1, c.s || 0));
+      const l = Math.max(0, Math.min(1, c.l || 0));
+      const h = ((c.h || 0) % 360 + 360) % 360;
+
+      // Achromatic or near-achromatic: very low saturation or very dark / very light
+      if (s < 0.15 || l < 0.10 || l > 0.90) {
+        // Map smoothly into the neutral sector: 360 to 420
+        // Sort neutrals from dark (black) -> medium (grey) -> bright (white)
+        return 360 + (l * 60);
+      }
+
+      // Chromatic: return hue (0 to 360)
+      return h;
+    }
+
+    function compareColors(a, b) {
+      const scoreA = getNodeColorScore(a);
+      const scoreB = getNodeColorScore(b);
+      if (Math.abs(scoreA - scoreB) > 0.5) {
+        return scoreA - scoreB;
+      }
+      const lDiff = (a?.colorInfo?.l || 0.5) - (b?.colorInfo?.l || 0.5);
+      if (Math.abs(lDiff) > 0.05) return lDiff;
+      return (a?.colorInfo?.s || 0.5) - (b?.colorInfo?.s || 0.5);
     }
 
     function addNode(album) {
       const size = getAlbumSize(album);
-      const angle = (nodes.length * 0.6) + (Math.random() - 0.5) * 0.4;
-      const dist = nodes.length < 5
-        ? (15 + Math.random() * 20)
-        : (75 + Math.sqrt(nodes.length) * 26 + Math.random() * 15);
+      const key = getAlbumKey(album);
+      const colorInfo = albumColorCache.get(key) || getFallbackHsl(key);
+
+      let spawnX = width / 2;
+      let spawnY = centerY;
+      let initialVx = (Math.random() - 0.5) * 2;
+      let initialVy = (Math.random() - 0.5) * 2;
+
+      if (currentSortMode === "color") {
+        const availableH = (width / 2) - 45;
+        const availableV = (height / 2) - (tabName === "scrobbles" ? 35 : 65);
+        const maxAllowedR = Math.max(100, Math.min(240, availableH, availableV));
+        const baseRadius = Math.max(90, Math.min(maxAllowedR, 55 + Math.sqrt(nodes.length + 1) * 16));
+
+        const tempNode = { colorInfo };
+        let insertIdx = 0;
+        for (let i = 0; i < nodes.length; i++) {
+          if (compareColors(nodes[i], tempNode) < 0) {
+            insertIdx++;
+          }
+        }
+        const total = nodes.length + 1;
+        const angle = ((insertIdx / total) * 2 * Math.PI) - (Math.PI / 2);
+        const stagger = total > 16 ? ((insertIdx % 2 === 0 ? 1 : -1) * 12) : 0;
+        const satOffset = ((colorInfo?.s || 0.5) - 0.5) * 20;
+        const r = Math.max(50, Math.min(maxAllowedR + 8, baseRadius + satOffset + stagger));
+        spawnX = (width / 2) + Math.cos(angle) * r;
+        spawnY = centerY + Math.sin(angle) * r;
+        initialVx = 0;
+        initialVy = 0;
+      } else {
+        const angle = (nodes.length * 0.6) + (Math.random() - 0.5) * 0.4;
+        const dist = nodes.length < 5
+          ? (15 + Math.random() * 20)
+          : (75 + Math.sqrt(nodes.length) * 26 + Math.random() * 15);
+        spawnX = width / 2 + Math.cos(angle) * dist;
+        spawnY = centerY + Math.sin(angle) * dist;
+      }
 
       const node = {
         id: nodes.length + Math.random(),
         size: size,
         radius: (size * 0.5) + (instancePhysics.minDistance * 0.5),
         album: album,
-        x: width / 2 + Math.cos(angle) * dist,
-        y: centerY + Math.sin(angle) * dist,
-        vx: (Math.random() - 0.5) * 2,
-        vy: (Math.random() - 0.5) * 2
+        colorInfo: colorInfo,
+        colorTargetX: spawnX,
+        colorTargetY: spawnY,
+        x: spawnX,
+        y: spawnY,
+        vx: initialVx,
+        vy: initialVy
       };
 
       const nodeEl = document.createElement("div");
       nodeEl.className = "album-node";
-      nodeEl.style.cssText = `position: absolute; top: 0; left: 0; width: ${size}px; height: ${size}px; cursor: grab; will-change: transform;`;
+      nodeEl.style.cssText = `position: absolute; top: 0; left: 0; width: ${size}px; height: ${size}px; cursor: grab; will-change: transform; transform: translate(${spawnX - (size / 2)}px, ${spawnY - (size / 2)}px);`;
 
       const inner = document.createElement("div");
       inner.className = "album-card-inner";
 
       const img = document.createElement("img");
+      img.crossOrigin = "anonymous";
       img.referrerPolicy = "no-referrer";
       img.loading = "eager";
       img.decoding = "async";
       img.alt = album.name || "Album";
       img.style.cssText = "width: 100%; height: 100%; object-fit: cover; display: block;";
 
-      img.onerror = () => {
-        // If image failed to load in the browser, skip this album entirely and add a replacement immediately
+      let failureHandled = false;
+      const handleImageFailure = () => {
+        if (failureHandled) return;
+        failureHandled = true;
         const key = getAlbumKey(album);
         failedAlbumKeys.add(key);
-        removeNode(node);
+        removeNode(node, true);
+        if (currentSortMode === "color") {
+          updateColorTargets();
+        }
         simulation.nodes(nodes);
-        simulation.alpha(0.3).restart();
+        simulation.alpha(0.35).restart();
         if (nodes.length < targetCount && !cancelled) {
           const replacement = getNextCandidate();
           if (replacement && !cancelled) {
             addNode(replacement);
             simulation.nodes(nodes);
-            simulation.alpha(0.3).restart();
+            simulation.alpha(0.35).restart();
           }
         }
       };
+
+      img.onload = () => {
+        if (!img.naturalWidth || img.naturalWidth <= 1 || !img.naturalHeight || img.naturalHeight <= 1) {
+          handleImageFailure();
+          return;
+        }
+        const extracted = extractColorFromImg(img, key);
+        node.colorInfo = extracted;
+        if (currentSortMode === "color") {
+          updateColorTargets();
+          if (simulation) simulation.alpha(0.2).restart();
+        }
+      };
+
+      img.onerror = handleImageFailure;
       img.src = album.image;
 
       inner.appendChild(img);
@@ -951,8 +1174,14 @@
       node.el = nodeEl;
       nodes.push(node);
       container.appendChild(nodeEl);
-      simulation.nodes(nodes);
-      simulation.alpha(0.65).restart();
+      if (currentSortMode === "color") {
+        updateColorTargets();
+        simulation.nodes(nodes);
+        simulation.alpha(0.35).restart();
+      } else {
+        simulation.nodes(nodes);
+        simulation.alpha(0.65).restart();
+      }
     }
 
     let isSpawning = false;
@@ -978,17 +1207,49 @@
           return;
         }
 
-        addNode(alb);
-        prefetchCandidatesAhead(20);
+        const onReadyToAdd = () => {
+          if (cancelled || nodes.length >= targetCount) {
+            isSpawning = false;
+            spawnTimer = null;
+            return;
+          }
 
-        if (nodes.length < targetCount) {
-          const progress = nodes.length / Math.max(1, targetCount);
-          // Albums pop in slowly at first (~265ms), then load faster and faster down to ~14ms
-          const delay = Math.round(14 + 250 * Math.pow(1 - progress, 2.5));
-          spawnTimer = setTimeout(step, delay);
+          addNode(alb);
+          prefetchCandidatesAhead(25);
+
+          if (nodes.length < targetCount) {
+            const progress = nodes.length / Math.max(1, targetCount);
+            // Albums pop in slowly at first (~265ms), then load faster and faster down to ~14ms
+            const delay = Math.round(14 + 250 * Math.pow(1 - progress, 2.5));
+            spawnTimer = setTimeout(step, delay);
+          } else {
+            isSpawning = false;
+            spawnTimer = null;
+          }
+        };
+
+        const key = getAlbumKey(alb);
+        if (currentSortMode === "color" && !albumColorCache.has(key)) {
+          const preImg = new Image();
+          preImg.crossOrigin = "anonymous";
+          preImg.referrerPolicy = "no-referrer";
+          let handled = false;
+          const finish = () => {
+            if (handled) return;
+            handled = true;
+            onReadyToAdd();
+          };
+          preImg.onload = () => {
+            extractColorFromImg(preImg, key);
+            finish();
+          };
+          preImg.onerror = () => {
+            finish();
+          };
+          setTimeout(finish, 320);
+          preImg.src = alb.image;
         } else {
-          isSpawning = false;
-          spawnTimer = null;
+          onReadyToAdd();
         }
       }
 
@@ -1002,10 +1263,18 @@
       if (nodes.length < targetCount) {
         spawnLoop();
       } else if (nodes.length > targetCount) {
+        if (spawnTimer) {
+          clearTimeout(spawnTimer);
+          spawnTimer = null;
+          isSpawning = false;
+        }
         const excess = nodes.length - targetCount;
         const toRemove = nodes.slice().sort((a, b) => (b.album?.rank || 0) - (a.album?.rank || 0)).slice(0, excess);
         for (const n of toRemove) {
           removeNode(n);
+        }
+        if (currentSortMode === "color") {
+          updateColorTargets();
         }
         simulation.nodes(nodes);
         simulation.alpha(0.35).restart();
@@ -1014,6 +1283,105 @@
 
     // Start initial spawn sequence
     spawnLoop();
+
+    function updateColorTargets() {
+      for (const node of nodes) {
+        if (!node.colorInfo) {
+          const img = node.el?.querySelector("img");
+          node.colorInfo = extractColorFromImg(img, getAlbumKey(node.album));
+        }
+      }
+
+      if (nodes.length === 0) return;
+
+      const sorted = nodes.slice().sort(compareColors);
+      const N = sorted.length;
+
+      // Available canvas boundaries
+      const availableH = (width / 2) - 45;
+      const availableV = (height / 2) - (tabName === "scrobbles" ? 35 : 65);
+      const maxAllowedR = Math.max(100, Math.min(240, availableH, availableV));
+
+      // Compact radius scaled to collection size so they cluster closely together
+      const baseRadius = Math.max(90, Math.min(maxAllowedR, 55 + Math.sqrt(N) * 16));
+
+      sorted.forEach((node, idx) => {
+        // Evenly distributed angle based on relative rank in sorted color sequence
+        // This guarantees NO gaps and NO separated islands, regardless of user's album colors
+        const angle = ((idx / N) * 2 * Math.PI) - (Math.PI / 2);
+
+        // Subtle radial stagger so albums cluster together tightly like a wreath
+        const stagger = N > 16 ? ((idx % 2 === 0 ? 1 : -1) * 12) : 0;
+        const satOffset = ((node.colorInfo?.s || 0.5) - 0.5) * 20;
+        const r = Math.max(50, Math.min(maxAllowedR + 8, baseRadius + satOffset + stagger));
+
+        node.colorTargetX = (width / 2) + Math.cos(angle) * r;
+        node.colorTargetY = centerY + Math.sin(angle) * r;
+      });
+    }
+
+    function applySortMode() {
+      if (!simulation) return;
+
+      if (focusedItem) {
+        deactivateFocus(focusedItem.node, focusedItem.el);
+      }
+
+      const cx = width / 2;
+      const cy = centerY;
+
+      // "Blow up" animation: send covers bursting outward before settling to optimal positions
+      for (const d of nodes) {
+        const dx = (d.x || cx) - cx;
+        const dy = (d.y || cy) - cy;
+        const dist = Math.hypot(dx, dy) || (Math.random() * 8 + 2);
+        const ux = dist > 0.001 ? (dx / dist) : Math.cos(Math.random() * Math.PI * 2);
+        const uy = dist > 0.001 ? (dy / dist) : Math.sin(Math.random() * Math.PI * 2);
+
+        // Explosive outward burst velocity
+        const burstSpeed = 40 + Math.random() * 25;
+        d.vx = ux * burstSpeed + (Math.random() - 0.5) * 8;
+        d.vy = uy * burstSpeed + (Math.random() - 0.5) * 8;
+
+        // Visual pop effect
+        if (d.el) {
+          d.el.classList.remove("album-node-blowup");
+          void d.el.offsetWidth;
+          d.el.classList.add("album-node-blowup");
+        }
+      }
+
+      for (const d of nodes) {
+        d.size = getAlbumSize(d.album);
+        if (d.el) {
+          d.el.style.width = `${d.size}px`;
+          d.el.style.height = `${d.size}px`;
+        }
+        d.radius = (d.size * 0.5) + (instancePhysics.minDistance * 0.5);
+      }
+
+      if (currentSortMode === "color") {
+        updateColorTargets();
+        const safeCharge = Math.min(-5, instancePhysics.attraction <= 0 ? instancePhysics.attraction : -15);
+        simulation
+          .force("colorX", d3.forceX((d) => d.colorTargetX !== undefined ? d.colorTargetX : cx).strength(0.42))
+          .force("colorY", d3.forceY((d) => d.colorTargetY !== undefined ? d.colorTargetY : cy).strength(0.42))
+          .force("x", d3.forceX(cx).strength(0.05))
+          .force("y", d3.forceY(cy).strength(0.05))
+          .force("charge", d3.forceManyBody().strength(safeCharge).distanceMax(130))
+          .force("collide", d3.forceCollide().radius((d) => d.radius).strength(0.85).iterations(3));
+        simulation.alpha(1).restart();
+      } else {
+        simulation
+          .force("colorX", null)
+          .force("colorY", null)
+          .force("x", d3.forceX(cx).strength(getNodeGravity))
+          .force("y", d3.forceY(cy).strength(getNodeGravity))
+          .force("charge", d3.forceManyBody().strength(instancePhysics.attraction).distanceMax(140))
+          .force("collide", d3.forceCollide().radius((d) => d.radius).strength(0.8).iterations(3));
+        simulation.alpha(1).restart();
+      }
+    }
 
     // Listen to physics adjustments from settings ONLY for scrobbles tab
     const onPhysicsChange = (e) => {
@@ -1032,15 +1400,38 @@
         }
         d.radius = (d.size * 0.5) + (instancePhysics.minDistance * 0.5);
       }
-      simulation.force("charge", d3.forceManyBody().strength(instancePhysics.attraction).distanceMax(140));
-      simulation.force("collide", d3.forceCollide().radius((d) => d.radius).strength(0.8).iterations(3));
-      simulation.force("x", d3.forceX(width / 2).strength(getNodeGravity));
-      simulation.force("y", d3.forceY(centerY).strength(getNodeGravity));
+
+      if (currentSortMode === "color") {
+        updateColorTargets();
+        const safeCharge = Math.min(-5, instancePhysics.attraction <= 0 ? instancePhysics.attraction : -15);
+        simulation
+          .force("colorX", d3.forceX((d) => d.colorTargetX !== undefined ? d.colorTargetX : (width / 2)).strength(0.42))
+          .force("colorY", d3.forceY((d) => d.colorTargetY !== undefined ? d.colorTargetY : centerY).strength(0.42))
+          .force("x", d3.forceX(width / 2).strength(0.05))
+          .force("y", d3.forceY(centerY).strength(0.05))
+          .force("charge", d3.forceManyBody().strength(safeCharge).distanceMax(130))
+          .force("collide", d3.forceCollide().radius((d) => d.radius).strength(0.85).iterations(3));
+      } else {
+        simulation
+          .force("colorX", null)
+          .force("colorY", null)
+          .force("x", d3.forceX(width / 2).strength(getNodeGravity))
+          .force("y", d3.forceY(centerY).strength(getNodeGravity))
+          .force("charge", d3.forceManyBody().strength(instancePhysics.attraction).distanceMax(140))
+          .force("collide", d3.forceCollide().radius((d) => d.radius).strength(0.85).iterations(3));
+      }
       simulation.alpha(0.35).restart();
+    };
+
+    const onSortChange = (e) => {
+      if (tabName !== "scrobbles") return;
+      currentSortMode = e?.detail?.mode || "scrobbles";
+      applySortMode();
     };
 
     if (tabName === "scrobbles") {
       window.addEventListener("chartfm-physics-change", onPhysicsChange);
+      window.addEventListener("chartfm-sort-change", onSortChange);
     }
 
     function destroy() {
@@ -1056,6 +1447,7 @@
       window.removeEventListener("resize", updateDimensions);
       if (tabName === "scrobbles") {
         window.removeEventListener("chartfm-physics-change", onPhysicsChange);
+        window.removeEventListener("chartfm-sort-change", onSortChange);
       }
     }
 
@@ -1193,8 +1585,21 @@
       }
     });
 
-    const targetList = (albums || []).slice(0, 25);
-    const targetCount = targetList.length;
+    const candidateList = (albums || []).slice();
+    const targetCount = Math.min(25, candidateList.length);
+    const failedMiniKeys = new Set();
+
+    function getNextMiniCandidate() {
+      const activeKeys = new Set(nodes.map((n) => getAlbumKey(n.album)));
+      for (const alb of candidateList) {
+        if (!alb || !alb.image) continue;
+        const key = getAlbumKey(alb);
+        if (!activeKeys.has(key) && !failedMiniKeys.has(key) && isValidCoverUrl(alb.image)) {
+          return alb;
+        }
+      }
+      return null;
+    }
 
     function addMiniNode(album) {
       if (cancelled) return;
@@ -1225,6 +1630,33 @@
       img.loading = "lazy";
       img.alt = "";
       img.style.cssText = "width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 3px; pointer-events: none; -webkit-user-drag: none; user-select: none;";
+
+      let miniFailed = false;
+      const handleMiniFailure = () => {
+        if (miniFailed) return;
+        miniFailed = true;
+        const key = getAlbumKey(album);
+        failedMiniKeys.add(key);
+        const idx = nodes.indexOf(node);
+        if (idx !== -1) nodes.splice(idx, 1);
+        if (nodeEl && nodeEl.parentNode) nodeEl.parentNode.removeChild(nodeEl);
+        simulation.nodes(nodes);
+        simulation.alpha(0.35).restart();
+
+        if (nodes.length < targetCount && !cancelled) {
+          const replacement = getNextMiniCandidate();
+          if (replacement && !cancelled) {
+            addMiniNode(replacement);
+          }
+        }
+      };
+
+      img.onload = () => {
+        if (!img.naturalWidth || img.naturalWidth <= 1 || !img.naturalHeight || img.naturalHeight <= 1) {
+          handleMiniFailure();
+        }
+      };
+      img.onerror = handleMiniFailure;
       img.src = album.image;
 
       inner.appendChild(img);
@@ -1325,7 +1757,7 @@
           spawnTimer = null;
           return;
         }
-        const alb = targetList[nodes.length];
+        const alb = getNextMiniCandidate();
         if (!alb) {
           isSpawning = false;
           spawnTimer = null;
@@ -1347,15 +1779,22 @@
     spawnMiniLoop();
 
     return {
+      refresh() {
+        updateDims();
+      },
       destroy() {
         cancelled = true;
         if (spawnTimer) clearTimeout(spawnTimer);
         if (focusedItem) deactivateMiniFocus(focusedItem.node, focusedItem.el);
         simulation.stop();
         window.removeEventListener("resize", updateDims);
+        mountElement.innerHTML = "";
       }
     };
   }
+
+  window.createMiniGenreSimulation = createMiniGenreSimulation;
+  window.preloadAlbumCovers = preloadAlbumCovers;
 
   let genreSimInstances = [];
 
