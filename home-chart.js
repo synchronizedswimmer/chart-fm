@@ -520,6 +520,9 @@
       <div class="album-modal-wiki-title">About this album</div>
       <div class="album-modal-wiki" id="modal-wiki">Fetching description from Last.fm...</div>
       <div class="album-modal-footer">
+        <button type="button" class="album-modal-explore-btn" id="modal-explore-orbit-btn">
+          Explore similar albums &rarr;
+        </button>
         <a class="album-modal-lastfm-link" id="modal-lastfm-link" href="${userLastFmUrl}" target="_blank" rel="noopener">
           ${userLastFmText}
         </a>
@@ -527,6 +530,46 @@
     `;
 
     modal.classList.add("active");
+
+    const exploreOrbitBtn = content.querySelector("#modal-explore-orbit-btn");
+    exploreOrbitBtn?.addEventListener("click", () => {
+      closeAlbumModal();
+      window.selectedOrbitAlbum = {
+        name: albumName,
+        artist: artistName,
+        image: imgUrl,
+        rank: album.rank,
+        playcount: album.playcount,
+        user: album.user
+      };
+      window.location.hash = "albums";
+      if (typeof window.showTab === "function") {
+        window.showTab("albums");
+      }
+      if (typeof window.loadAlbumOrbit === "function") {
+        window.loadAlbumOrbit(window.selectedOrbitAlbum);
+      }
+    });
+
+    const modalTags = content.querySelector("#modal-tags");
+    modalTags?.addEventListener("click", (e) => {
+      const tagEl = e.target.closest(".clickable-tag");
+      if (!tagEl || !tagEl.dataset.tag) return;
+      const tagName = decodeURIComponent(tagEl.dataset.tag);
+
+      closeAlbumModal();
+
+      window.location.hash = "explore";
+      if (typeof window.showTab === "function") {
+        window.showTab("explore");
+      }
+
+      setTimeout(() => {
+        if (typeof window.selectGenreDetail === "function") {
+          window.selectGenreDetail({ id: tagName, name: tagName });
+        }
+      }, 60);
+    });
 
     if (isGifImage(imgUrl)) {
       resolveStillAlbumImage(artistName, albumName, imgUrl).then((still) => {
@@ -582,9 +625,12 @@
         }
         if (info.tags?.tag && tagsEl) {
           const tags = Array.isArray(info.tags.tag) ? info.tags.tag : [info.tags.tag];
-          tagsEl.innerHTML = tags.slice(0, 5).map((t) => `<span class="album-modal-tag">${t.name}</span>`).join("");
+          tagsEl.innerHTML = tags
+            .slice(0, 5)
+            .map((t) => `<span class="album-modal-tag clickable-tag" data-tag="${encodeURIComponent(t.name)}" title="Explore the ${t.name} genre \u2192">${t.name}</span>`)
+            .join("");
         } else if (tagsEl) {
-          tagsEl.innerHTML = `<span class="album-modal-tag">album</span>`;
+          tagsEl.innerHTML = `<span class="album-modal-tag" style="cursor: default;">album</span>`;
         }
         if (info.wiki?.summary && wikiEl) {
           const clean = info.wiki.summary.replace(/<a\b[^>]*>(.*?)<\/a>/gi, "").trim();

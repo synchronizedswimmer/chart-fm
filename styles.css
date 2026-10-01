@@ -603,12 +603,25 @@ body.has-chart .search-bar-container {
 }
 
 .album-modal-tag {
-  font-size: 0.7rem;
-  padding: 2px 8px;
+  font-size: 0.72rem;
+  padding: 3px 9px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   color: #d4d4d8;
+  transition: all 0.18s ease;
+}
+
+.album-modal-tag.clickable-tag {
+  cursor: pointer;
+  user-select: none;
+}
+
+.album-modal-tag.clickable-tag:hover {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #38bdf8;
+  transform: translateY(-1px);
 }
 
 .album-modal-stats {
@@ -722,7 +735,39 @@ body.has-chart .search-bar-container {
 
 .album-modal-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.album-modal-explore-btn {
+  background: #27272a;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #f4f4f5;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  user-select: none;
+}
+
+.album-modal-explore-btn:hover {
+  background: #3f3f46;
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.album-modal-explore-btn:active {
+  transform: translateY(0);
 }
 
 .album-modal-lastfm-link {
@@ -1452,6 +1497,70 @@ body.has-chart .search-bar-container {
     height: 460px;
   }
 }
+
+/* Artist Orbit Solar System */
+.artist-orbit-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 10px 16px 40px;
+  box-sizing: border-box;
+}
+
+.artist-orbit-header {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.artist-orbit-search-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.artist-orbit-search-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: #18181b;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+  padding: 0 20px 0 16px;
+  height: 42px;
+  width: min(100%, 380px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.artist-orbit-search-pill:focus-within {
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.artist-orbit-mount {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: radial-gradient(circle at center, #18181f 0%, #111116 65%, #09090b 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.artist-orbit-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 
 
 

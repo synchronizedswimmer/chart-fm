@@ -99,6 +99,9 @@ Home
 <button id="nav-explore" class="floating-nav-item" type="button">
 Explore Genres
 </button>
+<button id="nav-albums" class="floating-nav-item" type="button">
+Explore Albums
+</button>
 <button id="nav-scrobbles" class="floating-nav-item" type="button">
 View My Scrobbles
 </button>
@@ -224,6 +227,30 @@ About
     </div>
   </section>
 </div>
+
+<div id="albums-tab-view" class="tab-view" style="display: none; width: 100%;">
+  <section class="artist-orbit-section">
+    <div class="artist-orbit-header">
+      <div class="simulation-title">Album Solar System Orbit</div>
+      <div id="orbit-status-text" class="simulation-subtitle">
+        interactive orbit · recommended albums orbiting your selection · click any planet to explore its orbit · click center to view album details
+      </div>
+    </div>
+
+    <div class="artist-orbit-search-wrap">
+      <div class="artist-orbit-search-pill">
+        <svg class="genre-search-icon" viewbox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="8.5" cy="8.5" r="5.5"></circle>
+          <path d="M12.5 12.5L16.5 16.5"></path>
+        </svg>
+        <input id="album-orbit-input" class="genre-search-input" type="text" placeholder="Search any album (e.g. OK Computer, Abbey Road, Blonde, Currents)" autocomplete="off">
+      </div>
+    </div>
+
+    <div id="album-orbit-mount" class="artist-orbit-mount"></div>
+  </section>
+</div>
+
 <div id="about-tab-view" class="tab-view" style="display: none; width: 100%;">
   <div style="min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center;">
     <p style="font-size: clamp(0.95rem, 2vw, 1.25rem); color: #e4e4e7; margin: 0; white-space: nowrap;">
@@ -336,23 +363,28 @@ About
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="home-chart.js"></script>
 <script src="genre-network.js"></script>
+<script src="artist-orbit.js"></script>
 <script>
   let currentTab = "home";
   let isScrobblesSimulationLoaded = false;
+  let isAlbumOrbitInitialized = false;
 
   function showTab(tabName) {
+    if (tabName === "artists") tabName = "albums";
     window.scrollTo(0, 0);
     currentTab = tabName;
     const views = {
       home: document.getElementById("home-tab-view"),
       scrobbles: document.getElementById("scrobbles-tab-view"),
       explore: document.getElementById("explore-tab-view"),
+      albums: document.getElementById("albums-tab-view"),
       about: document.getElementById("about-tab-view")
     };
     const navButtons = {
       home: document.getElementById("nav-home"),
       scrobbles: document.getElementById("nav-scrobbles"),
       explore: document.getElementById("nav-explore"),
+      albums: document.getElementById("nav-albums"),
       about: document.getElementById("nav-about")
     };
     const settingsUserGroup = document.getElementById("settings-user-group");
@@ -385,6 +417,14 @@ About
         window.refreshHomeChartDimensions?.();
       } else if (tabName === "explore") {
         window.dispatchEvent(new Event("resize"));
+      } else if (tabName === "albums") {
+        if (!isAlbumOrbitInitialized && typeof window.initAlbumOrbit === "function") {
+          window.initAlbumOrbit();
+          isAlbumOrbitInitialized = true;
+        } else if (window.selectedOrbitAlbum && typeof window.loadAlbumOrbit === "function") {
+          window.loadAlbumOrbit(window.selectedOrbitAlbum);
+        }
+        window.dispatchEvent(new Event("resize"));
       }
     }
 
@@ -392,6 +432,7 @@ About
       window.syncChartSettingsControls();
     }
   }
+  window.showTab = showTab;
 
   function initChartApp() {
     document.body.classList.add("has-chart");
@@ -400,8 +441,20 @@ About
     const navHome = document.getElementById("nav-home");
     const navScrobbles = document.getElementById("nav-scrobbles");
     const navExplore = document.getElementById("nav-explore");
+    const navAlbums = document.getElementById("nav-albums");
     const navAbout = document.getElementById("nav-about");
     const homeExploreLink = document.querySelector(".home-explore-link");
+    const albumSearchInput = document.getElementById("album-orbit-input");
+
+    albumSearchInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const query = albumSearchInput.value.trim();
+        if (query && typeof window.searchAndLoadAlbumOrbit === "function") {
+          window.searchAndLoadAlbumOrbit(query);
+        }
+      }
+    });
 
     navHome?.addEventListener("click", () => {
       window.location.hash = "home";
@@ -415,6 +468,10 @@ About
       window.location.hash = "explore";
     });
 
+    navAlbums?.addEventListener("click", () => {
+      window.location.hash = "albums";
+    });
+
     navAbout?.addEventListener("click", () => {
       window.location.hash = "about";
     });
@@ -426,12 +483,14 @@ About
     });
 
     window.addEventListener("hashchange", () => {
-      const hash = window.location.hash.replace(/^#/, "");
-      showTab(["home", "scrobbles", "explore", "about"].includes(hash) ? hash : "home");
+      let hash = window.location.hash.replace(/^#/, "");
+      if (hash === "artists") hash = "albums";
+      showTab(["home", "scrobbles", "explore", "albums", "about"].includes(hash) ? hash : "home");
     });
 
-    const initialHash = window.location.hash.replace(/^#/, "");
-    if (["scrobbles", "explore", "about"].includes(initialHash)) {
+    let initialHash = window.location.hash.replace(/^#/, "");
+    if (initialHash === "artists") initialHash = "albums";
+    if (["scrobbles", "explore", "albums", "about"].includes(initialHash)) {
       showTab(initialHash);
     }
 

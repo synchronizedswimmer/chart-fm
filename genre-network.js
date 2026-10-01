@@ -466,6 +466,9 @@
 
   async function selectGenreDetail(genreNode) {
     if (!genreNode) return;
+    if (typeof genreNode === "string") {
+      genreNode = { id: genreNode, name: genreNode };
+    }
     const section = document.getElementById("genre-detail-section");
     const titleEl = document.getElementById("genre-detail-title");
     const metaEl = document.getElementById("genre-detail-meta");
